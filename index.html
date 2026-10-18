@@ -209,8 +209,16 @@ h2{position:relative;font-size:17px;letter-spacing:.115em;text-transform:upperca
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#080808}::-webkit-scrollbar-thumb{background:#2c2c2c;border:1px solid #111;border-radius:8px}
 @media(max-width:900px){.meta{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.controls{grid-template-columns:1fr 1fr}.lower{grid-template-columns:1fr}.footer{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.app{padding:9px}.meta{grid-template-columns:1fr}.timerbox{padding:17px 10px}.timer{font-size:19vw}.stat .v{font-size:13px}header{padding:15px}.headerRight{width:100%;justify-content:space-between}.themePicker{flex:1}.editorGrid{grid-template-columns:1fr}.editorWide{grid-column:auto}.editNoteTop,.editorActions,.historyItemActions{grid-template-columns:1fr}.historyLoadNotice{align-items:stretch;flex-direction:column}.historyLoadNotice button{width:100%}}
-.histHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 13px}.histHead h2{margin:0;min-width:0}.histHead button{flex:0 0 auto;min-height:44px;padding:10px 14px;font-size:10px;letter-spacing:.09em;white-space:nowrap}
-@media(max-width:700px){.histHead{align-items:stretch;flex-direction:column}.histHead button{width:100%}}
+.histHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 13px;flex-wrap:wrap}.histHead h2{margin:0;min-width:0}.histHeadBtns{display:flex;gap:8px;flex:0 0 auto}.histHeadBtns button{flex:1 1 auto;min-height:44px;padding:10px 14px;font-size:10px;letter-spacing:.09em;white-space:nowrap}
+.histSummary{margin:0 0 8px}.histSectionLabel{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:2px 2px 0}.planBadge{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;border:1px solid rgba(255,200,90,.75);color:#ffd48a;font-size:8px;letter-spacing:.14em;vertical-align:middle}.histItem.planned{border-color:rgba(255,200,90,.45)}
+.addEntryBanner{position:fixed;inset:0;z-index:1200;display:flex;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:rgba(0,0,0,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.addEntryBanner[hidden]{display:none!important}
+.addEntryCard{width:min(520px,100%);max-height:min(86dvh,640px);overflow:auto;border-radius:14px;padding:16px 16px 14px;background:linear-gradient(180deg,rgba(28,28,30,.98),rgba(8,8,9,.98));border:1px solid rgba(255,255,255,.22);box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.addEntryCard strong{display:block;font-size:16px;letter-spacing:.01em;line-height:1.35;margin-bottom:6px;font-weight:700}.addEntryCard .noticeText{font-size:13px;color:var(--muted);line-height:1.45}.addEntryList{margin-top:10px;display:flex;flex-direction:column;gap:4px;max-height:28dvh;overflow:auto;font-size:12px;line-height:1.4}
+.addEntryActions{display:flex;gap:8px;margin-top:14px}.addEntryActions button{flex:1;min-height:48px}
+body.addEntryOpen{overflow:hidden}
+@media(min-width:701px){.addEntryBanner{align-items:center}}
+@media(max-width:700px){.histHead{align-items:stretch;flex-direction:column}.histHeadBtns{width:100%}.histHeadBtns button{flex:1}}
+@media print{.addEntryBanner{display:none!important}}
 @media print{body{background:#fff;color:#111}.controls,.footer,.history,.chip,.noteBtns,body:before,body:after{display:none!important}.glass,.stat,.entry{background:#fff!important;color:#111!important;box-shadow:none!important;border-color:#bbb!important;backdrop-filter:none!important}.app{padding:0;max-width:none}.lower{display:block}.timer{font-size:68px}.log{max-height:none;overflow:visible}.specialDateTime,label,.k,.stamp,.tiny{color:#555!important}}
 
 </style>
@@ -460,12 +468,12 @@ body.dropping::after{content:"Drop screenshots to attach";position:fixed;inset:1
 <div class="notes glass"><h2>Session Notes Log</h2><textarea id="note" placeholder="Type a session note... (Ctrl+Enter to add)"></textarea><div class="noteBtns"><button id="addNote">Add Note</button><button id="clearNote">Clear Entry</button></div><div class="searchBar"><input id="noteSearch" type="search" placeholder="Filter notes..." aria-label="Filter session notes"></div><div id="log" class="log"></div><div class="tiny">Each note records Eastern clock time and active session elapsed time. Session data autosaves locally in this browser.</div>
 <div class="attachmentsSection"><div class="attachHead"><h3>Session Screenshots</h3><button id="importAttachment">Import Screenshot</button></div><input id="attachmentInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden><div id="attachments" class="attachmentsGrid"></div><div class="tiny">PNG, JPG, or WEBP. Each screenshot receives an Eastern clock timestamp and session elapsed time and stays attached to this session in this browser.</div></div>
 <div class="attachmentsSection audioSection"><div class="attachHead"><h3>Session Audio Files</h3><button id="importAudio">Link Audio File</button></div><input id="audioInput" type="file" accept="audio/*" hidden><div id="audioRefs" class="audioGrid"></div><div class="tiny">Long audio stays in its original folder or drive. The timer stores the file reference, Eastern timestamp, session elapsed time, location/path note, and evidence note. On desktop Chrome, the app can also store a file handle when the browser permits it. On phones, LST uses the mobile file picker; after closing or reloading the page, tap Relink File if the browser no longer grants access to that recording.</div></div></div>
-<aside class="history glass"><div class="histHead"><h2>Session History</h2><button id="exportHistoryCsv" type="button" title="Download all saved sessions as a CSV file">Export CSV</button></div><div class="searchBar"><input id="historySearch" type="search" placeholder="Filter history..." aria-label="Filter session history"></div><div id="history" class="hist"></div>
+<aside class="history glass"><div class="histHead"><h2>Session History</h2><div class="histHeadBtns"><button id="importHistoryBtn" type="button" title="Import the app's history CSV or a JSON array of sessions">Import</button><button id="exportHistoryCsv" type="button" title="Download all saved sessions as a CSV file">Export CSV</button></div></div><div class="searchBar"><input id="historySearch" type="search" placeholder="Filter history..." aria-label="Filter session history"></div><div id="historySummary" class="tiny histSummary" aria-live="polite"></div><div id="history" class="hist"></div>
 <div id="historyEditor" class="editorPanel" style="display:none">
 <h3>Edit Saved Session</h3>
 <div class="editorGrid">
 <div class="editorField"><label>Session ID</label><textarea id="editId" rows="2"></textarea></div>
-<div class="editorField"><label>Status</label><select id="editStatus"><option>READY</option><option>ACTIVE</option><option>PAUSED</option><option>COMPLETED</option></select></div>
+<div class="editorField"><label>Status</label><select id="editStatus"><option>READY</option><option>ACTIVE</option><option>PAUSED</option><option>COMPLETED</option><option>PLANNED</option></select></div>
 <div class="editorField editorWide"><label>Session Title</label><textarea id="editTitle" rows="2"></textarea></div>
 <div class="editorField"><label>Session Date</label><input id="editDate" type="date"></div>
 <div class="editorField"><label>Start Timestamp</label><input id="editStart" type="datetime-local" step="1"></div>
@@ -486,7 +494,7 @@ body.dropping::after{content:"Drop screenshots to attach";position:fixed;inset:1
 <div class="editorActions"><button id="saveEdit">Save Changes</button><button id="cancelEdit">Cancel</button></div>
 </div></aside>
 </section>
-<div class="footer"><button id="newBtn">New Session</button><button id="saveBtn">Save Session</button><button id="sessionExportBtn">Export Session</button><button id="sessionImportBtn">Import Session</button><button id="textBtn">Export Text</button><button id="pdfBtn">Export PDF</button></div><input id="sessionImportInput" type="file" accept=".lst,application/json,text/plain" hidden>
+<div class="footer"><button id="newBtn">New Session</button><button id="saveBtn">Save Session</button><button id="sessionExportBtn">Export Session</button><button id="sessionImportBtn">Import Session</button><button id="textBtn">Export Text</button><button id="pdfBtn">Export PDF</button></div><input id="sessionImportInput" type="file" accept=".lst,application/json,text/plain" hidden><input id="historyImportInput" type="file" accept=".csv,text/csv,.json,application/json" hidden>
 <section class="settingsCard glass" id="settingsCard" aria-labelledby="settingsTitle">
 <h2 id="settingsTitle">Settings</h2>
 <div class="setGrid">
@@ -516,6 +524,13 @@ body.dropping::after{content:"Drop screenshots to attach";position:fixed;inset:1
 </section>
 </div>
 <div id="imageModal" role="dialog" aria-modal="true" aria-label="Screenshot preview"><div class="modalBar"><div id="modalTitle" class="modalTitle"></div><button id="closeModal">Close</button></div><img id="modalImage" alt="Session screenshot preview"></div>
+<div id="addEntryBanner" class="addEntryBanner" hidden>
+<div class="addEntryCard" role="dialog" aria-modal="true" aria-labelledby="addEntryTitle">
+<strong id="addEntryTitle"></strong>
+<div id="addEntryText" class="noticeText"></div>
+<div id="addEntryList" class="addEntryList"></div>
+<div class="addEntryActions"><button id="addEntryConfirm" type="button">Add</button><button id="addEntryCancel" type="button">Cancel</button></div>
+</div></div>
 <script>
 (()=>{const localISODate=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;const CUR="loopology-current-v1";
 let _quotaWarned=false;
@@ -598,7 +613,7 @@ async function copyAudioLocation(meta){let v=(meta.location||meta.name||"").trim
 async function renderAudioRefs(){let w=$("audioRefs");if(!w)return;clearAudioURLs();w.innerHTML="";let list=s.audioRefs||[];if(!list.length){w.innerHTML='<div class="tiny">No audio files linked yet.</div>';return}for(let meta of list){let card=document.createElement("div");card.className="audioCard";card.dataset.audioId=meta.id;let top=document.createElement("div");top.className="audioTop";let info=document.createElement("div");let name=document.createElement("div");name.className="audioName";name.textContent=meta.name||"Audio File";let m=document.createElement("div");m.className="audioMeta";let parts=[`${meta.clock||clock(meta.addedAt)} | SESSION +${meta.elapsed||"00:00:00"}`,fmtBytes(meta.size)];if(meta.durationMs)parts.push(`Duration ${dur(meta.durationMs)}`);m.textContent=parts.join(" · ");info.append(name,m);let badge=document.createElement("div");badge.className="audioBadge";badge.textContent="AUDIO REF";top.append(info,badge);let fields=document.createElement("div");fields.className="audioFields";let locWrap=document.createElement("div"),locLab=document.createElement("label");locLab.textContent="File Location / Archive Path";let loc=document.createElement("input");loc.className="audioLocation";loc.placeholder="Session 001";loc.value=meta.location||"";loc.addEventListener("input",()=>{meta.location=loc.value;persist()});locWrap.append(locLab,loc);let noteWrap=document.createElement("div"),noteLab=document.createElement("label");noteLab.textContent="Audio Evidence Note";let note=document.createElement("textarea");note.className="audioNote";note.placeholder="What this recording contains / why it belongs to this session";note.value=meta.note||"";note.addEventListener("input",()=>{meta.note=note.value;persist()});noteWrap.append(noteLab,note);fields.append(locWrap,noteWrap);let acts=document.createElement("div");acts.className="audioActions";let play=document.createElement("button");play.textContent="Load / Play";play.onclick=()=>playAudioReference(meta,card);let relink=document.createElement("button");relink.textContent="Relink File";relink.onclick=()=>chooseAudioFile(meta.id,false);let copy=document.createElement("button");copy.textContent="Copy Path";copy.onclick=()=>copyAudioLocation(meta);let rm=document.createElement("button");rm.textContent="Remove Reference";rm.onclick=()=>removeAudioReference(meta.id);acts.append(play,relink,copy,rm);let host=document.createElement("div");host.className="audioPlayerHost";card.append(top,fields,acts,host);w.appendChild(card)}}
 function renderEditAudioRefs(list){let w=$("editAudioRefs");if(!w)return;w.innerHTML="";if(!list||!list.length){w.innerHTML='<div class="tiny">No audio file references in this saved session.</div>';return}for(let meta of list){let card=document.createElement("div");card.className="editAudioCard";card.dataset.audioId=meta.id;let name=document.createElement("div");name.className="audioName";name.textContent=meta.name||"Audio File";let m=document.createElement("div");m.className="audioMeta";m.textContent=`${meta.clock||clock(meta.addedAt)} | SESSION +${meta.elapsed||"00:00:00"} · ${fmtBytes(meta.size)}${meta.durationMs?" · "+dur(meta.durationMs):""}`;let ll=document.createElement("label");ll.textContent="File Location / Archive Path";let loc=document.createElement("input");loc.className="editAudioLocation";loc.value=meta.location||"";let nl=document.createElement("label");nl.textContent="Audio Evidence Note";nl.style.marginTop="8px";let note=document.createElement("textarea");note.className="editAudioNote";note.value=meta.note||"";let actions=document.createElement("div");actions.className="editAudioActions";let del=document.createElement("button");del.textContent="Remove Reference";del.onclick=()=>card.remove();actions.appendChild(del);card.append(name,m,ll,loc,nl,note,actions);w.appendChild(card)}}
 function collectEditAudioRefs(original){let map=new Map((original||[]).map(x=>[x.id,x]));return[...document.querySelectorAll("#editAudioRefs .editAudioCard")].map(card=>{let old=map.get(card.dataset.audioId)||{id:card.dataset.audioId};return{...old,location:card.querySelector(".editAudioLocation").value.trim(),note:card.querySelector(".editAudioNote").value}})}
-function status(x){$("sessionStatus").value=x;let c=$("chip");c.textContent=x;c.classList.remove("running","paused","completed");if(x==="ACTIVE")c.classList.add("running");else if(x==="PAUSED")c.classList.add("paused");else if(x==="COMPLETED")c.classList.add("completed")}
+function status(x){$("sessionStatus").value=x;let c=$("chip");c.textContent=x;c.classList.remove("running","paused","completed");if(x==="ACTIVE")c.classList.add("running");else if(x==="PAUSED"||x==="PLANNED")c.classList.add("paused");else if(x==="COMPLETED")c.classList.add("completed")}
 function sessionKey(r){return r?`${r.id||""}::${r.start||""}`:""}
 function flashAutosave(){let d=$("autosaveIndicator");if(!d)return;d.classList.add("saved");clearTimeout(flashAutosave._t);flashAutosave._t=setTimeout(()=>d.classList.remove("saved"),1200)}
 function hideHistoryNotice(){loadedHistoryKey=null;$("historyLoadNotice").hidden=true;$("historyLoadNoticeText").textContent="This is a saved archive record. Deleting it removes the saved session and stored screenshot copies from this browser. External audio files are not deleted."}
@@ -615,23 +630,43 @@ function restore(){try{let p=JSON.parse(localStorage.getItem(CUR)||"null");if(!p
 function start(){pushUndo("Start Session");hideHistoryNotice();s={running:true,paused:false,stopped:false,start:Date.now(),pauseStart:null,pausedMs:0,stop:null,notes:[],attachments:[],audioRefs:[]};status("ACTIVE");persist();render();renderAttachments();renderAudioRefs()}
 function pause(){if(!s.running||s.paused)return;pushUndo("Pause");s.paused=true;s.pauseStart=Date.now();status("PAUSED");persist();render()}
 function resume(){if(!s.running||!s.paused)return;pushUndo("Resume");let n=Date.now();s.pausedMs+=n-s.pauseStart;s.pauseStart=null;s.paused=false;status("ACTIVE");persist();render()}
-function record(){let t=snap();return{id:$("sessionId").value||"UNTITLED",title:$("sessionTitle").value||"Loopology Session",date:$("sessionDate").value,status:$("sessionStatus").value,start:s.start,stop:s.stop,activeMs:t.active,pausedMs:t.paused,wallMs:t.wall,notes:s.notes||[],attachments:s.attachments||[],audioRefs:s.audioRefs||[],savedAt:Date.now()}}
+function record(){let t=snap();let statusVal=$("sessionStatus").value||"READY";let planStatus=statusVal==="PLANNED"&&!s.running?"planned":"done";if(planStatus==="done"&&statusVal==="PLANNED")statusVal="COMPLETED";return{id:$("sessionId").value||"UNTITLED",title:$("sessionTitle").value||"Loopology Session",date:$("sessionDate").value,status:statusVal,planStatus,start:s.start,stop:s.stop,activeMs:t.active,pausedMs:t.paused,wallMs:t.wall,notes:s.notes||[],attachments:s.attachments||[],audioRefs:s.audioRefs||[],savedAt:Date.now()}}
 function history(){try{return JSON.parse(localStorage.getItem(HIST)||"[]")}catch(e){return[]}}
 function writeHistory(h){safeSet(HIST,JSON.stringify(h.slice(0,100)))}
-function saveHistory(){let r=record();if(!r.start)return;let h=history().filter(x=>!(x.id===r.id&&x.start===r.start));h.unshift(r);writeHistory(h);renderHistory()}
+function saveHistory(){let r=record();if(!r.start)return;let h=history().filter(x=>!(x.id===r.id&&x.start===r.start)&&!(r.planStatus==="done"&&x.id&&String(x.id)===String(r.id)&&planStatusOf(x)==="planned"));h.unshift(r);writeHistory(h);renderHistory()}
 function stop(){if(!s.running)return;pushUndo("Stop Session");let n=Date.now();if(s.paused&&s.pauseStart){s.pausedMs+=n-s.pauseStart;s.pauseStart=null;s.paused=false}s.stop=n;s.stopped=true;s.running=false;status("COMPLETED");persist();saveHistory();render()}
 function add(){let tx=$("note").value.trim();if(!tx)return;pushUndo("Add Note");let n=Date.now();s.notes.push({time:n,clock:clock(n),elapsed:dur(snap(n).active),text:tx});$("note").value="";syncNoteLogChange();renderNotes()}
 function duplicateHistorySession(i){let h=history(),r=h[i];if(!r)return;pushUndo("Duplicate Session");let copy={...cloneState(r),id:nextId(),title:(r.title||"Session")+" (copy)",savedAt:Date.now()};h.unshift(copy);writeHistory(h);renderHistory()}
-function renderHistory(){let w=$("history"),h=history(),q=($("historySearch")?.value||"").trim().toLowerCase();w.innerHTML="";if(!h.length){w.innerHTML='<div class="tiny">No saved sessions yet.</div>';return}let filtered=h.map((r,i)=>({r,i}));if(q)filtered=filtered.filter(({r})=>((r.id||"")+(r.title||"")+(r.date||"")+(r.status||"")).toLowerCase().includes(q));if(!filtered.length){w.innerHTML='<div class="tiny">No sessions match this filter.</div>';return}filtered.forEach(({r,i})=>{let d=document.createElement("div");d.className="histItem";let strong=document.createElement("strong");strong.textContent=r.title;let sm=document.createElement("div");sm.className="small";sm.innerHTML=`${r.id}<br>${r.date||"No date"} · ${r.status||""}<br>Active ${dur(r.activeMs)} · Wall ${dur(r.wallMs)} · Notes ${(r.notes||[]).length} · Screenshots ${(r.attachments||[]).length} · Audio ${(r.audioRefs||[]).length}`;let acts=document.createElement("div");acts.className="historyItemActions";let loadBtn=document.createElement("button");loadBtn.textContent="Load";loadBtn.onclick=()=>load(i);let editBtn=document.createElement("button");editBtn.textContent="Edit";editBtn.onclick=()=>openEditor(i);let dupBtn=document.createElement("button");dupBtn.textContent="Duplicate";dupBtn.onclick=()=>duplicateHistorySession(i);let delBtn=document.createElement("button");delBtn.textContent="Delete";delBtn.className="deleteBtn";delBtn.onclick=()=>deleteHistorySession(i);acts.append(loadBtn,editBtn,dupBtn,delBtn);d.append(strong,sm,acts);w.appendChild(d)})}
+function renderHistory(){
+  let w=$("history"),h=history(),q=($("historySearch")&&$("historySearch").value||"").trim().toLowerCase();
+  w.innerHTML="";
+  let sum=$("historySummary");
+  let totals=completedTotals(h);
+  if(sum) sum.textContent=h.length?("Completed "+totals.count+" · Active "+dur(totals.activeMs)+(totals.planned?" · Upcoming "+totals.planned:"")):"";
+  if(!h.length){w.innerHTML='<div class="tiny">No saved sessions yet.</div>';return}
+  let rows=h.map((r,i)=>({r,i}));
+  if(q) rows=rows.filter(({r})=>historySearchText(r).includes(q));
+  if(!rows.length){w.innerHTML='<div class="tiny">No sessions match this filter.</div>';return}
+  let planned=rows.filter(({r})=>planStatusOf(r)==="planned").sort((a,b)=>(a.r.start||0)-(b.r.start||0));
+  let done=rows.filter(({r})=>planStatusOf(r)!=="planned");
+  if(planned.length){
+    w.appendChild(historySectionLabel("Upcoming / Planned"));
+    planned.forEach(item=>w.appendChild(historyCard(item,true)));
+  }
+  if(done.length){
+    if(planned.length) w.appendChild(historySectionLabel("Completed"));
+    done.forEach(item=>w.appendChild(historyCard(item,false)));
+  }
+}
 async function deleteHistorySession(i){let h=history(),r=h[i];if(!r)return;let ok=confirm(`Delete ${r.id||"this session"} from Session History?\n\nThis permanently removes the saved session record and stored screenshot copies from this browser. External audio files are NOT deleted.`);if(!ok)return;for(let a of (r.attachments||[]))await deleteAsset(a.id);for(let a of (r.audioRefs||[]))await deleteAudioHandle(a.id);let wasLoaded=loadedHistoryKey===sessionKey(r);h.splice(i,1);writeHistory(h);if(editingIndex===i)closeEditor();else if(editingIndex!==null&&editingIndex>i)editingIndex--;renderHistory();if(wasLoaded){hideHistoryNotice();fresh()}else persist()}
 async function deleteLoadedHistorySession(){if(!loadedHistoryKey)return;let h=history(),i=h.findIndex(r=>sessionKey(r)===loadedHistoryKey);if(i<0){hideHistoryNotice();persist();return}await deleteHistorySession(i)}
 function load(i){let r=history()[i];if(!r)return;pushUndo("Load Session");$("sessionId").value=r.id;$("sessionTitle").value=r.title;$("sessionDate").value=r.date||"";s={running:false,paused:false,stopped:true,start:r.start,pauseStart:null,pausedMs:r.pausedMs||0,stop:r.stop||(r.start+(r.wallMs||0)),notes:r.notes||[],attachments:r.attachments||[],audioRefs:r.audioRefs||[]};status(r.status||"COMPLETED");showHistoryNotice(r);persist();render();renderAttachments();renderAudioRefs();$("historyLoadNotice").scrollIntoView({behavior:"smooth",block:"nearest"})}
-function openEditor(i){let r=history()[i];if(!r)return;editingIndex=i;$("editId").value=r.id||"";$("editTitle").value=r.title||"";$("editDate").value=r.date||"";$("editStatus").value=r.status||"COMPLETED";$("editStart").value=localDT(r.start);$("editStop").value=localDT(r.stop);$("editActive").value=dur(r.activeMs);$("editPaused").value=dur(r.pausedMs);$("editWall").value=dur(r.wallMs);renderEditNotes(r.notes||[]);renderEditAttachments(r.attachments||[]);renderEditAudioRefs(r.audioRefs||[]);$("historyEditor").style.display="block";$("historyEditor").scrollIntoView({behavior:"smooth",block:"nearest"})}
+function openEditor(i){let r=history()[i];if(!r)return;editingIndex=i;$("editId").value=r.id||"";$("editTitle").value=r.title||"";$("editDate").value=r.date||"";$("editStatus").value=planStatusOf(r)==="planned"?"PLANNED":((r.status==="READY"||r.status==="ACTIVE"||r.status==="PAUSED"||r.status==="COMPLETED")?r.status:"COMPLETED");$("editStart").value=localDT(r.start);$("editStop").value=localDT(r.stop);$("editActive").value=dur(r.activeMs);$("editPaused").value=dur(r.pausedMs);$("editWall").value=dur(r.wallMs);renderEditNotes(r.notes||[]);renderEditAttachments(r.attachments||[]);renderEditAudioRefs(r.audioRefs||[]);$("historyEditor").style.display="block";$("historyEditor").scrollIntoView({behavior:"smooth",block:"nearest"})}
 function closeEditor(){editingIndex=null;$("historyEditor").style.display="none";$("editNotes").innerHTML="";$("editAttachments").innerHTML=""}
 function renderEditNotes(notes){let w=$("editNotes");w.innerHTML="";notes.forEach(n=>addEditNoteRow(n));if(!notes.length)w.innerHTML='<div class="tiny" id="noEditNotes">No timestamped notes in this saved session.</div>'}
 function addEditNoteRow(n={clock:"",elapsed:"00:00:00",text:""}){let no=$("noEditNotes");if(no)no.remove();let w=$("editNotes"),row=document.createElement("div");row.className="editNote";let top=document.createElement("div");top.className="editNoteTop";let c=document.createElement("div");c.innerHTML='<label>Clock Time</label>';let ci=document.createElement("input");ci.className="editClock";ci.value=n.clock||"";c.appendChild(ci);let e=document.createElement("div");e.innerHTML='<label>Elapsed</label>';let ei=document.createElement("input");ei.className="editElapsed";ei.value=n.elapsed||"00:00:00";e.appendChild(ei);let del=document.createElement("button");del.className="miniBtn";del.textContent="Delete";del.onclick=()=>row.remove();let tx=document.createElement("textarea");tx.className="editText";tx.value=n.text||"";top.append(c,e,del);row.append(top,tx);w.appendChild(row)}
 function collectEditNotes(){return[...document.querySelectorAll("#editNotes .editNote")].map(row=>({time:null,clock:row.querySelector(".editClock").value.trim(),elapsed:row.querySelector(".editElapsed").value.trim()||"00:00:00",text:row.querySelector(".editText").value}))}
-async function saveEditedSession(){if(editingIndex===null)return;let h=history(),old=h[editingIndex];if(!old)return;let start=fromLocalDT($("editStart").value),stop=fromLocalDT($("editStop").value),activeMs=parseDur($("editActive").value),pausedMs=parseDur($("editPaused").value),wallMs=parseDur($("editWall").value);if(start&&stop&&wallMs===0)wallMs=Math.max(0,stop-start);let updatedAudio=collectEditAudioRefs(old.audioRefs||[]),kept=new Set(updatedAudio.map(x=>x.id));for(let a of (old.audioRefs||[])){if(!kept.has(a.id))await deleteAudioHandle(a.id)}let u={...old,id:$("editId").value.trim()||"UNTITLED",title:$("editTitle").value.trim()||"Loopology Session",date:$("editDate").value,status:$("editStatus").value,start,stop,activeMs,pausedMs,wallMs,notes:collectEditNotes(),attachments:old.attachments||[],audioRefs:updatedAudio,savedAt:Date.now()};h[editingIndex]=u;writeHistory(h);if(loadedHistoryKey===sessionKey(old)){showHistoryNotice(u)}if(s.start===old.start||($("sessionId").value===old.id&&!s.running)){$("sessionId").value=u.id;$("sessionTitle").value=u.title;$("sessionDate").value=u.date||"";s={running:false,paused:false,stopped:true,start:u.start,pauseStart:null,pausedMs:u.pausedMs||0,stop:u.stop,notes:u.notes||[],attachments:u.attachments||[],audioRefs:u.audioRefs||[]};status(u.status||"COMPLETED");persist();render();renderAttachments();renderAudioRefs()}closeEditor();renderHistory()}
+async function saveEditedSession(){if(editingIndex===null)return;let h=history(),old=h[editingIndex];if(!old)return;let start=fromLocalDT($("editStart").value),stop=fromLocalDT($("editStop").value),activeMs=parseDur($("editActive").value),pausedMs=parseDur($("editPaused").value),wallMs=parseDur($("editWall").value);if(start&&stop&&wallMs===0)wallMs=Math.max(0,stop-start);let updatedAudio=collectEditAudioRefs(old.audioRefs||[]),kept=new Set(updatedAudio.map(x=>x.id));for(let a of (old.audioRefs||[])){if(!kept.has(a.id))await deleteAudioHandle(a.id)}let editPlan=$("editStatus").value==="PLANNED"?"planned":"done";let u={...old,id:$("editId").value.trim()||"UNTITLED",title:$("editTitle").value.trim()||"Loopology Session",date:$("editDate").value,status:editPlan==="planned"?"PLANNED":$("editStatus").value,planStatus:editPlan,start,stop,activeMs,pausedMs,wallMs,notes:collectEditNotes(),attachments:old.attachments||[],audioRefs:updatedAudio,savedAt:Date.now()};if(editPlan==="done"&&!(u.activeMs>0)&&old.plannedDurationMs>0){u.activeMs=old.plannedDurationMs;if(!(u.wallMs>0))u.wallMs=old.plannedDurationMs;if(u.start&&!u.stop)u.stop=u.start+u.wallMs}h[editingIndex]=u;writeHistory(h);if(loadedHistoryKey===sessionKey(old)){showHistoryNotice(u)}if(s.start===old.start||($("sessionId").value===old.id&&!s.running)){$("sessionId").value=u.id;$("sessionTitle").value=u.title;$("sessionDate").value=u.date||"";s={running:false,paused:false,stopped:true,start:u.start,pauseStart:null,pausedMs:u.pausedMs||0,stop:u.stop,notes:u.notes||[],attachments:u.attachments||[],audioRefs:u.audioRefs||[]};status(u.status||"COMPLETED");persist();render();renderAttachments();renderAudioRefs()}closeEditor();renderHistory()}
 function idPrefix(){return(CFG.prefix||"").trim()||`S-${new Date().getFullYear()}-`}
 function nextId(){let p=idPrefix(),esc=p.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),re=new RegExp("^"+esc+"(\\d+)$"),nums=history().map(x=>String(x.id||"").match(re)).filter(Boolean).map(m=>+m[1]),n=Math.max((nums.length?Math.max(...nums):0)+1,Math.max(1,Math.floor(+CFG.nextNum||1)));return p+String(n).padStart(3,"0")}
 function fresh(){let hasData=s.start||(s.notes&&s.notes.length)||(s.attachments&&s.attachments.length)||(s.audioRefs&&s.audioRefs.length);if(hasData&&!confirm("Start a new session? Current session data will be archived if it was running, or discarded from the workspace if it was not saved.\n\nUse Undo to restore if needed."))return;pushUndo("New Session");if(s.running)saveHistory();hideHistoryNotice();s={running:false,paused:false,stopped:false,start:null,pauseStart:null,pausedMs:0,stop:null,notes:[],attachments:[],audioRefs:[]};$("sessionId").value=nextId();$("sessionTitle").value="Loopology Session";$("sessionDate").value=localISODate();$("note").value="";status("READY");persist();render();renderAttachments();renderAudioRefs()}
@@ -646,8 +681,8 @@ function extraPairs(obj,known){if(!obj||typeof obj!=="object")return[];return Ob
 function formatNotes(notes){if(!Array.isArray(notes)||!notes.length)return"";let known=new Set(["time","clock","elapsed","text","attachmentId","audioRefId"]);return notes.map(n=>{n=n||{};let bits=[];if(n.clock)bits.push(String(n.clock));bits.push("Session +"+(n.elapsed||"00:00:00"));if(n.time!=null&&n.time!=="")bits.push("time="+n.time);if(n.attachmentId)bits.push("attachmentId="+n.attachmentId);if(n.audioRefId)bits.push("audioRefId="+n.audioRefId);bits.push(...extraPairs(n,known));return`[${bits.join(" | ")}] ${n.text||""}`}).join("\n")}
 function formatShots(list){if(!Array.isArray(list)||!list.length)return"";let known=new Set(["id","name","type","size","addedAt","clock","elapsed","caption"]);return list.map(a=>{a=a||{};let bits=[];if(a.name)bits.push(String(a.name));if(a.type)bits.push(String(a.type));if(a.size!=null&&a.size!=="")bits.push(a.size+" bytes");if(a.clock)bits.push(String(a.clock));if(a.elapsed)bits.push("Session +"+a.elapsed);if(a.caption)bits.push("caption: "+a.caption);if(a.addedAt!=null&&a.addedAt!=="")bits.push("addedAt="+a.addedAt);if(a.id)bits.push("id="+a.id);bits.push(...extraPairs(a,known));return bits.join(" | ")}).join("\n")}
 function formatAudioCsv(list){if(!Array.isArray(list)||!list.length)return"";let known=new Set(["id","name","type","size","lastModified","addedAt","clock","elapsed","durationMs","location","note","handleStored","relinkedAt"]);return list.map(a=>{a=a||{};let bits=[];if(a.name)bits.push(String(a.name));if(a.type)bits.push(String(a.type));if(a.size!=null&&a.size!=="")bits.push(a.size+" bytes");let dms=finiteNum(a.durationMs);if(dms!=null)bits.push("Duration "+dur(dms)+" ("+Math.floor(Math.max(0,dms)/1000)+"s)","durationMs="+a.durationMs);if(a.clock)bits.push(String(a.clock));if(a.elapsed)bits.push("Session +"+a.elapsed);if(a.location)bits.push("location: "+a.location);if(a.note)bits.push("note: "+a.note);if(a.addedAt!=null&&a.addedAt!=="")bits.push("addedAt="+a.addedAt);if(a.lastModified!=null&&a.lastModified!=="")bits.push("lastModified="+a.lastModified);if(a.id)bits.push("id="+a.id);if(Object.prototype.hasOwnProperty.call(a,"handleStored")&&a.handleStored!=null)bits.push("handleStored="+a.handleStored);if(a.relinkedAt!=null&&a.relinkedAt!=="")bits.push("relinkedAt="+a.relinkedAt);bits.push(...extraPairs(a,known));return bits.join(" | ")}).join("\n")}
-const HISTORY_CSV_HEADERS=["Session ID","Session Title","Date","Status","Started","Started ISO","Started (ms)","Ended","Ended ISO","Ended (ms)","Active Time","Active Seconds","Active (ms)","Paused Time","Paused Seconds","Paused (ms)","Wall Time","Wall Seconds","Wall (ms)","Saved At","Saved At ISO","Saved At (ms)","Imported At","Imported At ISO","Imported At (ms)","Notes","Screenshots","Audio Files"];
-function historyCsvRow(r){r=r||{};return[r.id||"",r.title||"",r.date||"",r.status||"",humanStamp(r.start),isoStamp(r.start),msText(r.start),humanStamp(r.stop),isoStamp(r.stop),msText(r.stop),durText(r.activeMs),secText(r.activeMs),msText(r.activeMs),durText(r.pausedMs),secText(r.pausedMs),msText(r.pausedMs),durText(r.wallMs),secText(r.wallMs),msText(r.wallMs),humanStamp(r.savedAt),isoStamp(r.savedAt),msText(r.savedAt),humanStamp(r.importedAt),isoStamp(r.importedAt),msText(r.importedAt),formatNotes(r.notes),formatShots(r.attachments),formatAudioCsv(r.audioRefs)]}
+const HISTORY_CSV_HEADERS=["Session ID","Session Title","Date","Status","Plan Status","Planned Duration","Planned Duration (ms)","Started","Started ISO","Started (ms)","Ended","Ended ISO","Ended (ms)","Active Time","Active Seconds","Active (ms)","Paused Time","Paused Seconds","Paused (ms)","Wall Time","Wall Seconds","Wall (ms)","Saved At","Saved At ISO","Saved At (ms)","Imported At","Imported At ISO","Imported At (ms)","Notes","Screenshots","Audio Files"];
+function historyCsvRow(r){r=r||{};let plan=planStatusOf(r);let pd=finiteNum(r.plannedDurationMs);return[r.id||"",r.title||"",r.date||"",r.status||"",plan,pd==null?"":dur(pd),pd==null?"":String(Math.round(pd)),humanStamp(r.start),isoStamp(r.start),msText(r.start),humanStamp(r.stop),isoStamp(r.stop),msText(r.stop),durText(r.activeMs),secText(r.activeMs),msText(r.activeMs),durText(r.pausedMs),secText(r.pausedMs),msText(r.pausedMs),durText(r.wallMs),secText(r.wallMs),msText(r.wallMs),humanStamp(r.savedAt),isoStamp(r.savedAt),msText(r.savedAt),humanStamp(r.importedAt),isoStamp(r.importedAt),msText(r.importedAt),formatNotes(r.notes),formatShots(r.attachments),formatAudioCsv(r.audioRefs)]}
 function historyToCsv(rows){let lines=[HISTORY_CSV_HEADERS,...(rows||[]).map(historyCsvRow)];return"\uFEFF"+lines.map(cols=>cols.map(csvEscape).join(",")).join("\r\n")+"\r\n"}
 function exportHistoryCsv(){let h=history();if(!h.length){toast("No saved sessions to export.");return}let csv=historyToCsv(h),blob=new Blob([csv],{type:"text/csv;charset=utf-8"});downloadBlob(blob,"loopology-sessions-"+localISODate()+".csv");toast("Exported "+h.length+" session"+(h.length===1?"":"s")+".","ok")}
 function exportText(){let r=record(),lines=["LOOPOLOGY SESSION TIMER","gdotbennettmusic","",`Session ID: ${r.id}`,`Session Title: ${r.title}`,`Date: ${r.date}`,`Status: ${r.status}`,`Started: ${r.start?specialDateTime(r.start):"—"}`,`Ended: ${r.stop?specialDateTime(r.stop):"—"}`,`Active Time: ${dur(r.activeMs)}`,`Paused Time: ${dur(r.pausedMs)}`,`Wall Time: ${dur(r.wallMs)}`,"","SESSION NOTES LOG","-----------------",...(r.notes||[]).map(n=>`[${n.clock} | Session +${n.elapsed}] ${n.text}`),"","SESSION SCREENSHOTS","-------------------",...((r.attachments||[]).length?(r.attachments||[]).map((a,i)=>`${i+1}. [${a.clock||clock(a.addedAt)} | Session +${a.elapsed||"00:00:00"}] ${a.name}${a.caption?" — "+a.caption:""}`):["No screenshots attached."]),"","SESSION AUDIO FILES","-------------------",...((r.audioRefs||[]).length?(r.audioRefs||[]).map((a,i)=>`${i+1}. [${a.clock||clock(a.addedAt)} | Session +${a.elapsed||"00:00:00"}] ${a.name} | ${fmtBytes(a.size)}${a.durationMs?" | Duration "+dur(a.durationMs):""}${a.location?" | Location: "+a.location:""}${a.note?" | Note: "+a.note:""}`):["No audio files linked."])];let blob=new Blob([lines.join("\n")],{type:"text/plain"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=(r.id+"_"+r.title).replace(/[^a-z0-9-_]+/gi,"_")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}
@@ -736,6 +771,722 @@ $("setTestAlert").onclick=()=>fireAlert("Test alert: this is how the target aler
 $("setReset").onclick=()=>{if(!confirm("Reset all timer settings to defaults? (Theme and custom colors are kept.)"))return;CFG={...CFG_DEF};cfgToUI();cfgChanged();toast("Settings reset to defaults","ok")};
 cfgToUI();checkTarget();
 document.querySelectorAll("button:not([type])").forEach(b=>b.type="button");
+/* Assistant add-link (#add=) and history import. Never writes history without Add. */
+let pendingAdd=null;
+function planStatusOf(r){
+  if(!r||typeof r!=="object") return "done";
+  let explicit=explicitPlan(r.planStatus);
+  if(explicit) return explicit;
+  let timer=String(r.status||"").trim().toUpperCase();
+  if(timer==="PLANNED") return "planned";
+  let st=finiteNum(r.start);
+  if(st!=null&&st>Date.now()&&timer!=="COMPLETED"&&timer!=="ACTIVE"&&timer!=="PAUSED") return "planned";
+  return "done";
+}
+function explicitPlan(v){
+  let s=String(v==null?"":v).trim().toLowerCase();
+  if(!s) return "";
+  if(s==="planned"||s==="plan"||s==="upcoming") return "planned";
+  if(s==="done"||s==="complete"||s==="completed") return "done";
+  return "";
+}
+function completedTotals(list){
+  let planned=0,count=0,active=0;
+  (list||[]).forEach(r=>{
+    if(planStatusOf(r)==="planned"){planned++;return}
+    count++;
+    active+=Number(r.activeMs)||0;
+  });
+  return {count,activeMs:active,planned};
+}
+function historySearchText(r){
+  return [r.id,r.title,r.date,r.status,planStatusOf(r),...(r.notes||[]).map(n=>n&&n.text)].join(" ").toLowerCase();
+}
+function historySectionLabel(text){
+  let lab=document.createElement("div");
+  lab.className="histSectionLabel";
+  lab.textContent=text;
+  return lab;
+}
+function historyCard(item,planned){
+  let r=item.r,i=item.i,d=document.createElement("div");
+  d.className="histItem"+(planned?" planned":"");
+  d.dataset.sessionId=r.id||"";
+  d.dataset.plan=planned?"planned":"done";
+  let strong=document.createElement("strong");
+  strong.appendChild(document.createTextNode(r.title||"Loopology Session"));
+  if(planned){
+    let badge=document.createElement("span");
+    badge.className="planBadge";
+    badge.textContent="PLANNED";
+    strong.appendChild(badge);
+  }
+  d.appendChild(strong);
+  let sm=document.createElement("div");
+  sm.className="small";
+  let lines;
+  if(planned){
+    let when=r.start!=null?sessionWhenLabel(r.start):(r.date||"No date");
+    let len=finiteNum(r.plannedDurationMs);
+    lines=[r.id||"",when+" · Planned","Length "+(len==null?"not set":dur(len))+" · Notes "+((r.notes||[]).length)];
+  }else{
+    lines=[r.id||"",(r.date||"No date")+" · "+(r.status||""),"Active "+dur(r.activeMs)+" · Wall "+dur(r.wallMs)+" · Notes "+((r.notes||[]).length)+" · Screenshots "+((r.attachments||[]).length)+" · Audio "+((r.audioRefs||[]).length)];
+  }
+  lines.forEach((line,idx)=>{if(idx) sm.appendChild(document.createElement("br"));sm.appendChild(document.createTextNode(line))});
+  d.appendChild(sm);
+  let acts=document.createElement("div");
+  acts.className="historyItemActions";
+  if(planned){
+    acts.append(actBtn("Start",()=>startPlannedSession(i)),actBtn("Mark Done",()=>markPlannedDone(i)),actBtn("Edit",()=>openEditor(i)),actBtn("Delete",()=>deleteHistorySession(i),"deleteBtn"));
+  }else{
+    acts.append(actBtn("Load",()=>load(i)),actBtn("Edit",()=>openEditor(i)),actBtn("Duplicate",()=>duplicateHistorySession(i)),actBtn("Delete",()=>deleteHistorySession(i),"deleteBtn"));
+  }
+  d.appendChild(acts);
+  return d;
+}
+function actBtn(label,fn,cls){
+  let b=document.createElement("button");
+  b.type="button";
+  b.textContent=label;
+  if(cls) b.className=cls;
+  b.onclick=fn;
+  return b;
+}
+function etPartsToEpoch(y,mo,d,h,mi,s){
+  let fmt=new Intl.DateTimeFormat("en-US",{timeZone:ET,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  let partsMs=ms=>{
+    let map={};
+    fmt.formatToParts(new Date(ms)).forEach(p=>{if(p.type!=="literal") map[p.type]=p.value});
+    let hour=+map.hour; if(hour===24) hour=0;
+    return Date.UTC(+map.year,+map.month-1,+map.day,hour,+map.minute,+map.second);
+  };
+  let utc=Date.UTC(y,mo-1,d,h,mi,s||0);
+  let offset1=partsMs(utc)-utc;
+  let guess=utc-offset1;
+  let offset2=partsMs(guess)-guess;
+  return guess-(offset2-offset1);
+}
+function etDateString(ms){
+  let map={};
+  new Intl.DateTimeFormat("en-US",{timeZone:ET,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date(ms)).forEach(p=>{if(p.type!=="literal") map[p.type]=p.value});
+  return map.year+"-"+map.month+"-"+map.day;
+}
+function sessionWhenLabel(ms){
+  if(ms==null||!Number.isFinite(Number(ms))) return "";
+  let parts=new Intl.DateTimeFormat("en-US",{timeZone:ET,month:"short",day:"numeric",hour:"numeric",minute:"2-digit",hour12:true}).formatToParts(new Date(Number(ms)));
+  let g=t=>{let p=parts.find(x=>x.type===t);return p?p.value:""};
+  let ap=g("dayPeriod").replace(/\./g,"").toUpperCase();
+  return g("month")+" "+g("day")+", "+g("hour")+":"+g("minute")+" "+ap;
+}
+function prettyDateOnly(iso){
+  let m=String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return String(iso||"");
+  let dt=new Date(Date.UTC(+m[1],+m[2]-1,+m[3],12));
+  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"UTC"}).format(dt);
+}
+function parseWhen(v){
+  if(v==null||v==="") return null;
+  if(typeof v==="number") return Number.isFinite(v)?v:null;
+  let s=String(v).trim();
+  if(!s) return null;
+  if(/^\d{10,13}$/.test(s)){let n=Number(s);return s.length<=10?n*1000:n}
+  if(/[zZ]|[+-]\d{2}:?\d{2}$/.test(s)){let n=Date.parse(s);return Number.isFinite(n)?n:null}
+  let m=s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if(m) return etPartsToEpoch(+m[1],+m[2],+m[3],+(m[4]||0),+(m[5]||0),+(m[6]||0));
+  return null;
+}
+function parseClock(v){
+  let s=String(v||"").trim();
+  let m=s.match(/^(\d{1,2})(?::(\d{2}))?(?::(\d{2}))?\s*([AaPp][Mm])?$/);
+  if(!m) return null;
+  let h=+m[1],mi=+(m[2]||0),sec=+(m[3]||0),ap=(m[4]||"").toLowerCase();
+  if(ap==="pm"&&h<12) h+=12;
+  if(ap==="am"&&h===12) h=0;
+  if(!ap&&h>23) return null;
+  if(h>23||mi>59||sec>59) return null;
+  return {h,mi,sec};
+}
+function parseDurationMs(v){
+  if(v==null||v==="") return null;
+  if(typeof v==="number"){if(!Number.isFinite(v)||v<0) return null;return Math.round(v*1000)}
+  let s=String(v).trim();
+  if(!s) return null;
+  if(/^\d+(?:\.\d+)?$/.test(s)) return Math.round(parseFloat(s)*1000);
+  let hms=s.match(/^(\d+):(\d{1,2})(?::(\d{1,2}))?$/);
+  if(hms){
+    let a=+hms[1],b=+hms[2],c=hms[3]!=null?+hms[3]:null;
+    if(b>59||(c!=null&&c>59)) return null;
+    if(c==null) return (a*60+b)*1000;
+    return (a*3600+b*60+c)*1000;
+  }
+  let re=/(\d+(?:\.\d+)?)\s*(hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)\b/gi,mm,total=0,any=false;
+  while((mm=re.exec(s))){
+    any=true;
+    let n=parseFloat(mm[1]),u=mm[2].toLowerCase();
+    if(u.charAt(0)==="h") total+=n*3600000;
+    else if(u.charAt(0)==="m") total+=n*60000;
+    else total+=n*1000;
+  }
+  return any?Math.round(total):null;
+}
+function takeMsField(v,label){
+  if(v==null||v==="") return null;
+  let n=typeof v==="number"?v:Number(String(v).trim());
+  if(!Number.isFinite(n)||n<0) throw new Error(label+" must be a non-negative number of milliseconds.");
+  return Math.round(n);
+}
+function firstFilled(vals){
+  for(let v of vals){if(v!=null&&String(v).trim()!=="") return v}
+  return null;
+}
+function isInstant(v){
+  if(v==null||v==="") return false;
+  if(typeof v==="number") return Number.isFinite(v);
+  let s=String(v).trim();
+  if(/^\d{10,13}$/.test(s)) return true;
+  if(/[zZ]|[+-]\d{2}:?\d{2}$/.test(s)) return true;
+  if(/[T\s]\d{1,2}:\d{2}/.test(s)) return true;
+  return false;
+}
+function combineDateAndTime(date,time){
+  let dm=String(date||"").trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!dm) throw new Error("date must be YYYY-MM-DD.");
+  let clock=parseClock(time);
+  if(!clock) throw new Error("Could not read time. Use 7:00 PM or 19:00.");
+  return etPartsToEpoch(+dm[1],+dm[2],+dm[3],clock.h,clock.mi,clock.sec);
+}
+function cleanId(v){
+  if(v==null||String(v).trim()==="") return "";
+  let s=String(v).trim();
+  if(s.length>80) throw new Error("Session id is too long.");
+  if(/[\u0000-\u001f<>]/.test(s)) throw new Error("Session id has unsupported characters.");
+  return s;
+}
+function allocId(used){
+  let p=idPrefix(),esc=p.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),re=new RegExp("^"+esc+"(\\d+)$");
+  let n=Math.max(1,Math.floor(+CFG.nextNum||1));
+  let consider=id=>{let m=String(id||"").match(re);if(m) n=Math.max(n,+m[1]+1)};
+  history().forEach(x=>consider(x.id));
+  used.forEach(consider);
+  let id=p+String(n).padStart(3,"0");
+  while(used.has(id)||history().some(x=>String(x.id)===id)){n++;id=p+String(n).padStart(3,"0")}
+  return id;
+}
+function normalizeNotes(raw,start){
+  if(raw==null||raw==="") return [];
+  let list;
+  if(typeof raw==="string") list=[raw];
+  else if(Array.isArray(raw)) list=raw;
+  else throw new Error("notes must be text or a list.");
+  let out=[];
+  for(let n of list){
+    if(n==null||n==="") continue;
+    if(typeof n==="string"){
+      let text=n.trim();
+      if(!text) continue;
+      if(text.length>20000) throw new Error("a note is too long.");
+      out.push({time:start||null,clock:start?clock(start):"",elapsed:"00:00:00",text});
+      continue;
+    }
+    if(typeof n!=="object"||Array.isArray(n)) throw new Error("each note must be text or an object.");
+    let text=String(n.text!=null?n.text:(n.note!=null?n.note:"")).trim();
+    if(!text) throw new Error("a note is missing text.");
+    if(text.length>20000) throw new Error("a note is too long.");
+    let time=n.time!=null&&n.time!==""?parseWhen(n.time):null;
+    if(n.time!=null&&n.time!==""&&time==null) throw new Error("a note has an unreadable time.");
+    let note={time:time,clock:String(n.clock||(time?clock(time):(start?clock(start):""))),elapsed:String(n.elapsed||"00:00:00"),text};
+    if(n.attachmentId) note.attachmentId=String(n.attachmentId);
+    if(n.audioRefId) note.audioRefId=String(n.audioRefId);
+    out.push(note);
+  }
+  return out;
+}
+function normalizeAttachments(list){
+  if(list==null||list==="") return [];
+  if(!Array.isArray(list)) throw new Error("attachments must be an array.");
+  return list.map((a,idx)=>{
+    if(!a||typeof a!=="object"||Array.isArray(a)) throw new Error("each screenshot must be an object.");
+    let added=a.addedAt!=null&&a.addedAt!==""?parseWhen(a.addedAt):null;
+    return {id:a.id?String(a.id):newAssetId(),name:a.name?String(a.name):"Screenshot",type:a.type?String(a.type):"",size:finiteNum(a.size)||0,addedAt:added,clock:a.clock?String(a.clock):"",elapsed:a.elapsed?String(a.elapsed):"00:00:00",caption:a.caption?String(a.caption):""};
+  });
+}
+function normalizeAudio(list){
+  if(list==null||list==="") return [];
+  if(!Array.isArray(list)) throw new Error("audioRefs must be an array.");
+  return list.map((a,idx)=>{
+    if(!a||typeof a!=="object"||Array.isArray(a)) throw new Error("each audio reference must be an object.");
+    let added=a.addedAt!=null&&a.addedAt!==""?parseWhen(a.addedAt):null;
+    let meta={id:a.id?String(a.id):newAudioId(),name:a.name?String(a.name):"Audio File",type:a.type?String(a.type):"audio",size:finiteNum(a.size)||0,lastModified:finiteNum(a.lastModified),addedAt:added,clock:a.clock?String(a.clock):"",elapsed:a.elapsed?String(a.elapsed):"00:00:00",durationMs:finiteNum(a.durationMs)||0,location:a.location?String(a.location):"",note:a.note?String(a.note):"",handleStored:!!a.handleStored};
+    if(a.relinkedAt!=null&&a.relinkedAt!=="") meta.relinkedAt=parseWhen(a.relinkedAt);
+    return meta;
+  });
+}
+function readPlanChoice(raw){
+  if(raw.planStatus!=null&&String(raw.planStatus).trim()!==""){
+    let p=explicitPlan(raw.planStatus);
+    if(!p) throw new Error('planStatus must be "done" or "planned".');
+    return p;
+  }
+  if(typeof raw.planned==="boolean") return raw.planned?"planned":"done";
+  if(raw.plan!=null&&String(raw.plan).trim()!==""){
+    let p=explicitPlan(raw.plan);
+    if(!p) throw new Error('plan must be "done" or "planned".');
+    return p;
+  }
+  let st=String(raw.status||"").trim().toLowerCase();
+  if(st==="planned"||st==="done") return st==="planned"?"planned":"done";
+  return "";
+}
+function normalizeEntry(raw,used){
+  if(!raw||typeof raw!=="object"||Array.isArray(raw)) throw new Error("Each entry must be an object.");
+  let id=cleanId(raw.id);
+  if(!id) id=allocId(used);
+  let title=String(raw.title==null||String(raw.title).trim()===""?"Loopology Session":raw.title).trim();
+  if(title.length>300) throw new Error("Title is too long.");
+  let instant=firstFilled([raw.start,raw.startMs,raw.startedMs,raw.startISO,raw.started,raw.startTime]);
+  let start=null;
+  if(raw.date&&raw.time&&!isInstant(instant)) start=combineDateAndTime(raw.date,raw.time);
+  else{
+    start=parseWhen(instant);
+    if(instant!=null&&start==null) throw new Error("Could not read the start time.");
+    if(start==null&&raw.date&&raw.time) start=combineDateAndTime(raw.date,raw.time);
+  }
+  let stopRaw=firstFilled([raw.stop,raw.stopMs,raw.stopISO,raw.ended,raw.end,raw.endTime]);
+  let stop=parseWhen(stopRaw);
+  if(stopRaw!=null&&stop==null) throw new Error("Could not read the end time.");
+  let plan=readPlanChoice(raw);
+  if(!plan){
+    let timer=String(raw.status||"").trim().toUpperCase();
+    let future=start!=null&&start>Date.now();
+    plan=(timer==="PLANNED"||(future&&timer!=="COMPLETED"&&timer!=="ACTIVE"&&timer!=="PAUSED"))?"planned":"done";
+  }
+  let given=String(raw.status||"").trim().toUpperCase();
+  let timerStatus=plan==="planned"
+    ?((given==="ACTIVE"||given==="PAUSED"||given==="PLANNED")?given:"PLANNED")
+    :((given==="READY"||given==="ACTIVE"||given==="PAUSED"||given==="COMPLETED")?given:"COMPLETED");
+  let date="";
+  if(raw.date!=null&&String(raw.date).trim()!==""){
+    date=String(raw.date).trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("date must be YYYY-MM-DD.");
+  }else date=etDateString(start!=null?start:Date.now());
+  let durationMs=null;
+  if(raw.durationMs!=null&&raw.durationMs!=="") durationMs=takeMsField(raw.durationMs,"durationMs");
+  else if(raw.duration!=null&&String(raw.duration).trim()!==""){
+    durationMs=parseDurationMs(raw.duration);
+    if(durationMs==null) throw new Error("Could not read duration. Use HH:MM:SS, 90m, or a number of seconds.");
+  }
+  let activeMs=takeMsField(raw.activeMs,"activeMs");
+  let pausedMs=takeMsField(raw.pausedMs,"pausedMs");
+  let wallMs=takeMsField(raw.wallMs,"wallMs");
+  let plannedDurationMs=takeMsField(raw.plannedDurationMs,"plannedDurationMs");
+  if(pausedMs==null) pausedMs=0;
+  if(plan==="planned"){
+    if(plannedDurationMs==null) plannedDurationMs=durationMs;
+    if(activeMs==null) activeMs=0;
+    if(wallMs==null) wallMs=0;
+  }else{
+    if(activeMs==null) activeMs=durationMs!=null?durationMs:0;
+    if(wallMs==null) wallMs=durationMs!=null?Math.max(durationMs,activeMs+pausedMs):activeMs+pausedMs;
+    if(stop==null&&start!=null&&wallMs>0) stop=start+wallMs;
+  }
+  let savedRaw=firstFilled([raw.savedAt]);
+  let savedAt=parseWhen(savedRaw);
+  if(savedRaw!=null&&savedAt==null) throw new Error("Could not read savedAt.");
+  if(savedAt==null) savedAt=Date.now();
+  let importedRaw=firstFilled([raw.importedAt]);
+  let importedAt=parseWhen(importedRaw);
+  if(importedRaw!=null&&importedAt==null) throw new Error("Could not read importedAt.");
+  let notes=normalizeNotes(raw.notes!=null?raw.notes:raw.note,start);
+  let attachments=normalizeAttachments(raw.attachments);
+  let audioRefs=normalizeAudio(raw.audioRefs);
+  let entry={id,title,date,planStatus:plan,status:timerStatus,start:start==null?null:start,stop:stop==null?null:stop,activeMs,pausedMs,wallMs,notes,attachments,audioRefs,savedAt};
+  if(plannedDurationMs!=null) entry.plannedDurationMs=plannedDurationMs;
+  if(importedAt!=null) entry.importedAt=importedAt;
+  return entry;
+}
+function normalizeEntryList(list){
+  if(!Array.isArray(list)) throw new Error("Entries must be an array.");
+  if(!list.length) throw new Error("There are no sessions to add.");
+  if(list.length>100) throw new Error("Add at most 100 sessions at a time.");
+  let used=new Set();
+  return list.map((raw,idx)=>{
+    try{
+      let e=normalizeEntry(raw,used);
+      used.add(e.id);
+      return e;
+    }catch(err){
+      throw new Error("Entry "+(idx+1)+": "+(err&&err.message?err.message:"invalid"));
+    }
+  });
+}
+function partitionNew(entries){
+  let have=new Set(history().map(x=>String(x.id||"")));
+  let fresh=[],dup=[];
+  entries.forEach(e=>{
+    let id=String(e.id||"");
+    if(have.has(id)) dup.push(e);
+    else{fresh.push(e);have.add(id)}
+  });
+  return {fresh,dup};
+}
+function mergeHistoryEntries(entries){
+  let parts=partitionNew(entries);
+  if(!parts.fresh.length) return parts;
+  let now=Date.now();
+  parts.fresh.forEach(e=>{if(e.importedAt==null) e.importedAt=now});
+  writeHistory(parts.fresh.concat(history()));
+  return parts;
+}
+function addPrompt(parts){
+  let fresh=parts.fresh,n=fresh.length,planned=fresh.filter(e=>e.planStatus==="planned");
+  let title;
+  if(!n) title=parts.dup.length===1?"This session is already in history.":"These sessions are already in history.";
+  else if(n===1&&planned.length===1){
+    let e=fresh[0];
+    if(e.start!=null) title="Add 1 planned session for "+sessionWhenLabel(e.start)+"?";
+    else if(e.date) title="Add 1 planned session for "+prettyDateOnly(e.date)+"?";
+    else title="Add 1 planned session to history?";
+  }else if(n===1&&fresh[0].start!=null) title="Add 1 session for "+sessionWhenLabel(fresh[0].start)+"?";
+  else if(n===1) title="Add 1 session to history?";
+  else if(planned.length===n) title="Add "+n+" planned sessions to history?";
+  else title="Add "+n+" sessions to history?";
+  let bits=[];
+  if(n===1) bits.push([fresh[0].title,fresh[0].id].filter(Boolean).join(" · "));
+  else if(n>1&&planned.length&&planned.length<n) bits.push(planned.length+" planned, "+(n-planned.length)+" completed.");
+  if(parts.dup.length) bits.push(parts.dup.length===1?"1 duplicate will be skipped.":parts.dup.length+" duplicates will be skipped.");
+  return {title,detail:bits.filter(Boolean).join(" ")};
+}
+function showAddBanner(opts){
+  let b=$("addEntryBanner");
+  if(!b) return;
+  $("addEntryTitle").textContent=opts.title||"";
+  $("addEntryText").textContent=opts.detail||"";
+  let list=$("addEntryList");
+  list.innerHTML="";
+  (opts.items||[]).forEach(e=>{
+    let row=document.createElement("div");
+    let when=e.start!=null?sessionWhenLabel(e.start):(e.date||"");
+    row.textContent=(e.planStatus==="planned"?"Planned":"Done")+" · "+(e.title||"Session")+(e.id?" · "+e.id:"")+(when?" · "+when:"");
+    list.appendChild(row);
+  });
+  let ok=$("addEntryConfirm");
+  ok.hidden=!opts.canAdd;
+  $("addEntryCancel").textContent="Cancel";
+  b.hidden=false;
+  document.body.classList.add("addEntryOpen");
+  (opts.canAdd?ok:$("addEntryCancel")).focus();
+}
+function hideAddBanner(){
+  let b=$("addEntryBanner");
+  if(b) b.hidden=true;
+  document.body.classList.remove("addEntryOpen");
+}
+function openAddConfirm(entries,source){
+  let parts=partitionNew(entries);
+  let prompt=addPrompt(parts);
+  pendingAdd={canAdd:parts.fresh.length>0,entries:parts.fresh,source:source||"file"};
+  showAddBanner({title:prompt.title,detail:prompt.detail,canAdd:pendingAdd.canAdd,items:parts.fresh.length>1?parts.fresh:(parts.fresh.length?[]:parts.dup)});
+}
+function openAddError(message,source){
+  pendingAdd={canAdd:false,entries:[],source:source||"file"};
+  showAddBanner({title:"Could not add these sessions.",detail:message,canAdd:false,items:[]});
+}
+function confirmPendingAdd(){
+  if(!pendingAdd||!pendingAdd.canAdd) return;
+  let source=pendingAdd.source,entries=pendingAdd.entries;
+  pendingAdd=null;
+  hideAddBanner();
+  if(source==="hash") clearAddHash();
+  let parts=mergeHistoryEntries(entries);
+  renderHistory();
+  let n=parts.fresh.length;
+  let msg="Added "+n+" session"+(n===1?"":"s")+".";
+  if(parts.dup.length) msg+=" Skipped "+parts.dup.length+" duplicate"+(parts.dup.length===1?"":"s")+".";
+  toast(msg,"ok");
+  announce(msg);
+  let hist=$("history");
+  if(hist) hist.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function cancelPendingAdd(){
+  if(!pendingAdd&&(!$("addEntryBanner")||$("addEntryBanner").hidden)) return;
+  let source=pendingAdd&&pendingAdd.source;
+  pendingAdd=null;
+  hideAddBanner();
+  if(source==="hash") clearAddHash();
+}
+function hashAddToken(){
+  let h=location.hash||"";
+  if(h.charAt(0)==="#") h=h.slice(1);
+  if(h.includes("%")){try{h=decodeURIComponent(h)}catch(e){}}
+  if(h.slice(0,4)==="add=") return h.slice(4);
+  return null;
+}
+function clearAddHash(){
+  if(hashAddToken()==null) return;
+  try{window.history.replaceState(null,"",location.pathname+location.search)}catch(e){location.hash=""}
+}
+function b64urlToString(token){
+  let b64=String(token||"").replace(/\s+/g,"").replace(/-/g,"+").replace(/_/g,"/");
+  if(!b64) throw new Error("The link has no entry.");
+  let pad=b64.length%4;
+  if(pad) b64+="=".repeat(4-pad);
+  let bin;
+  try{bin=atob(b64)}catch(e){throw new Error("The link encoding is not valid base64url.")}
+  let bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  try{return new TextDecoder("utf-8",{fatal:true}).decode(bytes)}catch(e){throw new Error("The link encoding is not valid base64url.")}
+}
+function coerceEntryList(data){
+  if(data&&data.format==="LOOPOLOGY_SESSION") throw new Error("This is a .lst session file. Use Import Session at the bottom of the page.");
+  if(Array.isArray(data)) return data;
+  if(data&&Array.isArray(data.entries)) return data.entries;
+  if(data&&Array.isArray(data.sessions)) return data.sessions;
+  if(data&&typeof data==="object") return [data];
+  throw new Error("Provide one session object or an array of sessions.");
+}
+function decodeAddToken(token){
+  let text=b64urlToString(token);
+  let data;
+  try{data=JSON.parse(text)}catch(e){throw new Error("The link is not valid JSON.")}
+  return coerceEntryList(data);
+}
+function offerAddFromHash(){
+  let token=hashAddToken();
+  if(token==null) return;
+  try{openAddConfirm(normalizeEntryList(decodeAddToken(token)),"hash")}
+  catch(err){openAddError(err&&err.message?err.message:"Could not read this link.","hash")}
+}
+function parseCsv(text){
+  text=String(text||"").replace(/^\uFEFF/,"").replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+  let rows=[],row=[],cur="",q=false;
+  for(let i=0;i<text.length;i++){
+    let c=text.charAt(i);
+    if(q){
+      if(c==='"'){
+        if(text.charAt(i+1)==='"'){cur+='"';i++}
+        else q=false;
+      }else cur+=c;
+    }else if(c==='"') q=true;
+    else if(c===","){row.push(cur);cur=""}
+    else if(c==="\n"){row.push(cur);rows.push(row);row=[];cur=""}
+    else cur+=c;
+  }
+  if(cur.length||row.length){row.push(cur);rows.push(row)}
+  return rows.filter((r,idx)=>idx===0||r.some(c=>String(c).trim()!==""));
+}
+function splitPipes(line){return String(line||"").split(" | ")}
+function parseExportedNotes(cell){
+  if(cell==null||String(cell).trim()==="") return [];
+  let text=String(cell).replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+  if(!/^\[[^\n]*\]/m.test(text)) return text.split("\n").map(s=>s.trim()).filter(Boolean);
+  return text.split("\n").filter(l=>l.trim()).map(line=>{
+    let m=line.match(/^\[([\s\S]*?)\]\s?([\s\S]*)$/);
+    if(!m) return line.trim()?{text:line.trim()}:null;
+    let note={text:(m[2]||"").trim()},clockSet=false;
+    if(!note.text) return null;
+    splitPipes(m[1]).forEach(p=>{
+      if(!p) return;
+      if(/^Session \+/.test(p)) note.elapsed=p.replace(/^Session \+/,"");
+      else if(/^time=/.test(p)) note.time=p.slice(5);
+      else if(/^attachmentId=/.test(p)) note.attachmentId=p.slice(13);
+      else if(/^audioRefId=/.test(p)) note.audioRefId=p.slice(11);
+      else if(!clockSet){note.clock=p;clockSet=true}
+    });
+    return note;
+  }).filter(Boolean);
+}
+function parseExportedShots(cell){
+  if(cell==null||String(cell).trim()==="") return [];
+  return String(cell).replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n").filter(l=>l.trim()).map(line=>{
+    let meta={},nameSet=false,typeSet=false,caps=[];
+    splitPipes(line).forEach(p=>{
+      if(/^Session \+/.test(p)) meta.elapsed=p.replace(/^Session \+/,"");
+      else if(/^caption:\s*/i.test(p)) caps.push(p.replace(/^caption:\s*/i,""));
+      else if(/^(\d+)\s+bytes$/i.test(p)) meta.size=Number(p);
+      else if(/^addedAt=/.test(p)) meta.addedAt=p.slice(8);
+      else if(/^id=/.test(p)) meta.id=p.slice(3);
+      else if(!nameSet){meta.name=p;nameSet=true}
+      else if(!typeSet&&/^[\w.+-]+\/[\w.+-]+$/.test(p)){meta.type=p;typeSet=true}
+      else if(!meta.clock) meta.clock=p;
+      else caps.push(p);
+    });
+    if(caps.length) meta.caption=caps.join(" | ");
+    return meta;
+  });
+}
+function parseExportedAudio(cell){
+  if(cell==null||String(cell).trim()==="") return [];
+  return String(cell).replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n").filter(l=>l.trim()).map(line=>{
+    let meta={},nameSet=false,typeSet=false,notes=[],locs=[];
+    splitPipes(line).forEach(p=>{
+      if(/^Session \+/.test(p)) meta.elapsed=p.replace(/^Session \+/,"");
+      else if(/^durationMs=/.test(p)) meta.durationMs=p.slice(11);
+      else if(/^Duration /.test(p)){}
+      else if(/^addedAt=/.test(p)) meta.addedAt=p.slice(8);
+      else if(/^lastModified=/.test(p)) meta.lastModified=p.slice(13);
+      else if(/^relinkedAt=/.test(p)) meta.relinkedAt=p.slice(11);
+      else if(/^handleStored=/.test(p)) meta.handleStored=p.slice(13)==="true";
+      else if(/^id=/.test(p)) meta.id=p.slice(3);
+      else if(/^location:\s*/.test(p)) locs.push(p.replace(/^location:\s*/,""));
+      else if(/^note:\s*/.test(p)) notes.push(p.replace(/^note:\s*/,""));
+      else if(/^(\d+)\s+bytes$/i.test(p)) meta.size=Number(p);
+      else if(!nameSet){meta.name=p;nameSet=true}
+      else if(!typeSet&&/^[\w.+-]+\/[\w.+-]+$/.test(p)){meta.type=p;typeSet=true}
+      else if(!meta.clock) meta.clock=p;
+      else notes.push(p);
+    });
+    if(locs.length) meta.location=locs.join(" | ");
+    if(notes.length) meta.note=notes.join(" | ");
+    return meta;
+  });
+}
+function csvRowsToRawEntries(rows){
+  if(!rows.length) throw new Error("The CSV file is empty.");
+  let headers=rows[0].map(h=>String(h||"").trim());
+  let index={};
+  headers.forEach((h,i)=>{if(h) index[h.toLowerCase()]=i});
+  if(index["session id"]==null&&index.id==null&&index.title==null&&index["session title"]==null) throw new Error("This CSV does not look like a session history file.");
+  let body=rows.slice(1).filter(r=>r.some(c=>String(c).trim()!==""));
+  if(!body.length) throw new Error("The CSV file has no session rows.");
+  let get=(r,name)=>{let i=index[name.toLowerCase()];return i==null?"":(r[i]==null?"":r[i])};
+  let official=index["session id"]!=null;
+  return body.map(r=>{
+    if(!official){
+      let obj={};
+      let put=(key,val)=>{if(val!=null&&String(val).trim()!=="") obj[key]=val};
+      put("id",get(r,"id")||get(r,"session id"));
+      put("title",get(r,"title")||get(r,"session title"));
+      put("date",get(r,"date"));
+      put("time",get(r,"time"));
+      put("duration",get(r,"duration"));
+      put("durationMs",get(r,"durationms")||get(r,"duration ms"));
+      put("planStatus",get(r,"planstatus")||get(r,"plan status")||get(r,"plan"));
+      put("status",get(r,"status"));
+      put("start",get(r,"start")||get(r,"started")||get(r,"started (ms)"));
+      put("stop",get(r,"stop")||get(r,"end")||get(r,"ended")||get(r,"ended (ms)"));
+      put("activeMs",get(r,"activems")||get(r,"active (ms)"));
+      put("pausedMs",get(r,"pausedms")||get(r,"paused (ms)"));
+      put("wallMs",get(r,"wallms")||get(r,"wall (ms)"));
+      put("notes",get(r,"notes")||get(r,"note"));
+      return obj;
+    }
+    let obj={
+      id:get(r,"Session ID"),
+      title:get(r,"Session Title"),
+      date:get(r,"Date"),
+      status:get(r,"Status"),
+      notes:parseExportedNotes(get(r,"Notes")),
+      attachments:parseExportedShots(get(r,"Screenshots")),
+      audioRefs:parseExportedAudio(get(r,"Audio Files"))
+    };
+    let plan=get(r,"Plan Status"); if(plan) obj.planStatus=plan;
+    let start=get(r,"Started (ms)")||get(r,"Started ISO"); if(start) obj.start=start;
+    let stop=get(r,"Ended (ms)")||get(r,"Ended ISO"); if(stop) obj.stop=stop;
+    if(get(r,"Active (ms)")!=="") obj.activeMs=get(r,"Active (ms)");
+    if(get(r,"Paused (ms)")!=="") obj.pausedMs=get(r,"Paused (ms)");
+    if(get(r,"Wall (ms)")!=="") obj.wallMs=get(r,"Wall (ms)");
+    let saved=get(r,"Saved At (ms)")||get(r,"Saved At ISO"); if(saved) obj.savedAt=saved;
+    let imported=get(r,"Imported At (ms)")||get(r,"Imported At ISO"); if(imported) obj.importedAt=imported;
+    let pd=get(r,"Planned Duration (ms)");
+    if(pd) obj.plannedDurationMs=pd;
+    else if(get(r,"Planned Duration")){
+      let ms=parseDurationMs(get(r,"Planned Duration"));
+      if(ms!=null) obj.plannedDurationMs=ms;
+    }
+    return obj;
+  });
+}
+function entriesFromImportText(text,filename){
+  let body=String(text||"").replace(/^\uFEFF/,"");
+  let name=String(filename||"").toLowerCase();
+  let asJson=name.endsWith(".json")||/^\s*[[{]/.test(body);
+  if(asJson){
+    let data;
+    try{data=JSON.parse(body)}catch(e){throw new Error("That JSON file could not be read.")}
+    return coerceEntryList(data);
+  }
+  return csvRowsToRawEntries(parseCsv(body));
+}
+async function onHistoryImportFile(file){
+  if(!file) return;
+  try{
+    let text=await file.text();
+    openAddConfirm(normalizeEntryList(entriesFromImportText(text,file.name)),"file");
+  }catch(err){
+    openAddError(err&&err.message?err.message:"Could not import that file.","file");
+  }
+}
+function markPlannedDone(i){
+  let h=history(),r=h[i];
+  if(!r||planStatusOf(r)!=="planned") return;
+  pushUndo("Mark Planned Done");
+  let active=Number(r.activeMs)||0,wall=Number(r.wallMs)||0,paused=Number(r.pausedMs)||0;
+  let plannedLen=finiteNum(r.plannedDurationMs);
+  if(active<=0&&plannedLen>0){active=plannedLen;if(wall<=0) wall=plannedLen}
+  let stop=r.stop;
+  if(!stop&&r.start&&wall>0) stop=r.start+wall;
+  h[i]={...r,planStatus:"done",status:"COMPLETED",activeMs:active,pausedMs:paused,wallMs:wall,stop:stop||null,savedAt:Date.now()};
+  writeHistory(h);
+  renderHistory();
+  let msg="Marked "+(r.id||"session")+" done.";
+  toast(msg,"ok");
+  announce(msg);
+}
+function startPlannedSession(i){
+  let r=history()[i];
+  if(!r||planStatusOf(r)!=="planned") return;
+  let dirty=!!(s.running||s.start||(s.notes&&s.notes.length)||(s.attachments&&s.attachments.length)||(s.audioRefs&&s.audioRefs.length));
+  if(dirty&&!confirm('Start "'+(r.title||r.id||"this session")+'" in the timer now? The current workspace will switch to this planned session.')) return;
+  if(s.running) stop();
+  else pushUndo("Start Planned Session");
+  $("sessionId").value=r.id||nextId();
+  $("sessionTitle").value=r.title||"Loopology Session";
+  $("sessionDate").value=etDateString(Date.now());
+  $("note").value="";
+  hideHistoryNotice();
+  let notes=[];
+  try{notes=cloneState(r.notes||[])}catch(e){notes=(r.notes||[]).map(n=>({...n}))}
+  s={running:true,paused:false,stopped:false,start:Date.now(),pauseStart:null,pausedMs:0,stop:null,notes,attachments:[],audioRefs:[]};
+  status("ACTIVE");
+  persist();
+  render();
+  renderAttachments();
+  renderAudioRefs();
+  try{wantWake()}catch(e){}
+  let box=document.querySelector(".timerbox");
+  if(box) box.scrollIntoView({behavior:"smooth",block:"nearest"});
+  let msg="Started "+(r.title||r.id||"planned session")+".";
+  toast(msg,"ok");
+  announce(msg);
+}
+function onAddBannerKey(e){
+  let b=$("addEntryBanner");
+  if(!b||b.hidden) return;
+  if(e.key==="Escape"){e.preventDefault();e.stopPropagation();cancelPendingAdd()}
+  else if(e.key==="Enter"&&pendingAdd&&pendingAdd.canAdd){
+    let tag=(e.target&&e.target.tagName||"").toLowerCase();
+    if(tag==="textarea") return;
+    e.preventDefault();
+    confirmPendingAdd();
+  }
+}
+function bindAssistantHistory(){
+  let imp=$("importHistoryBtn"),input=$("historyImportInput");
+  if(imp&&input){
+    imp.addEventListener("click",()=>{input.value="";input.click()});
+    input.addEventListener("change",async()=>{
+      let file=input.files&&input.files[0];
+      input.value="";
+      if(file) await onHistoryImportFile(file);
+    });
+  }
+  if($("addEntryConfirm")) $("addEntryConfirm").addEventListener("click",confirmPendingAdd);
+  if($("addEntryCancel")) $("addEntryCancel").addEventListener("click",cancelPendingAdd);
+  document.addEventListener("keydown",onAddBannerKey,true);
+}
+bindAssistantHistory();
+offerAddFromHash();
+window.addEventListener("hashchange",()=>{if(hashAddToken()!=null) offerAddFromHash()});
 })();
 </script>
 <!-- LST-9: themes (Obsidian/Midnight/Emerald/Amber/Violet/Crimson/Arctic/Graphite) + Redo, search, shortcuts, confirm, chip states, autosave, history Duplicate. -->
