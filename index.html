@@ -225,7 +225,7 @@ h2{position:relative;font-size:17px;letter-spacing:.115em;text-transform:upperca
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#080808}::-webkit-scrollbar-thumb{background:#2c2c2c;border:1px solid #111;border-radius:8px}
 @media(max-width:900px){.meta{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.controls{grid-template-columns:1fr 1fr}.lower{grid-template-columns:1fr}.footer{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.app{padding:9px}.meta{grid-template-columns:1fr}.timerbox{padding:17px 10px}.timer{font-size:19vw}.stat .v{font-size:13px}header{padding:15px}.headerRight{width:100%;justify-content:space-between}.themePicker{flex:1}.editorGrid{grid-template-columns:1fr}.editorWide{grid-column:auto}.editNoteTop,.editorActions,.historyItemActions{grid-template-columns:1fr}.historyLoadNotice{align-items:stretch;flex-direction:column}.historyLoadNotice button{width:100%}}
-.histHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 13px;flex-wrap:wrap}.histHead h2{margin:0;min-width:0}.histHeadBtns{display:flex;gap:8px;flex:0 0 auto}.histHeadBtns button{flex:1 1 auto;min-height:44px;padding:10px 14px;font-size:10px;letter-spacing:.09em;white-space:nowrap}
+.histHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 13px;flex-wrap:wrap}.histHead h2{margin:0;min-width:0}.histHeadBtns{display:flex;gap:8px;flex:0 0 auto;flex-wrap:wrap}.histTotal{border-color:rgba(255,255,255,.32)}.histTotal strong{letter-spacing:.12em;text-transform:uppercase;font-size:11px;margin-bottom:2px}.histTotal .small{color:var(--text);font-variant-numeric:tabular-nums}.histHeadBtns button{flex:1 1 auto;min-height:44px;padding:10px 14px;font-size:10px;letter-spacing:.09em;white-space:nowrap}
 .histSummary{margin:0 0 8px}.histSectionLabel{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:2px 2px 0}.planBadge{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;border:1px solid rgba(255,200,90,.75);color:#ffd48a;font-size:8px;letter-spacing:.14em;vertical-align:middle}.histItem.planned{border-color:rgba(255,200,90,.45)}
 .addEntryBanner{position:fixed;inset:0;z-index:1200;display:flex;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:rgba(0,0,0,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.addEntryBanner[hidden]{display:none!important}
 .addEntryCard{width:min(520px,100%);max-height:min(86dvh,640px);overflow:auto;border-radius:14px;padding:16px 16px 14px;background:linear-gradient(180deg,rgba(28,28,30,.98),rgba(8,8,9,.98));border:1px solid rgba(255,255,255,.22);box-shadow:0 24px 60px rgba(0,0,0,.55)}
@@ -484,7 +484,7 @@ body.dropping::after{content:"Drop screenshots to attach";position:fixed;inset:1
 <div class="notes glass"><h2>Session Notes Log</h2><textarea id="note" placeholder="Type a session note... (Ctrl+Enter to add)"></textarea><div class="noteBtns"><button id="addNote">Add Note</button><button id="clearNote">Clear Entry</button></div><div class="searchBar"><input id="noteSearch" type="search" placeholder="Filter notes..." aria-label="Filter session notes"></div><div id="log" class="log"></div><div class="tiny">Each note records Eastern clock time and active session elapsed time. Session data autosaves locally in this browser.</div>
 <div class="attachmentsSection"><div class="attachHead"><h3>Session Screenshots</h3><button id="importAttachment">Import Screenshot</button></div><input id="attachmentInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden><div id="attachments" class="attachmentsGrid"></div><div class="tiny">PNG, JPG, or WEBP. Each screenshot receives an Eastern clock timestamp and session elapsed time and stays attached to this session in this browser.</div></div>
 <div class="attachmentsSection audioSection"><div class="attachHead"><h3>Session Audio Files</h3><button id="importAudio">Link Audio File</button></div><input id="audioInput" type="file" accept="audio/*" hidden><div id="audioRefs" class="audioGrid"></div><div class="tiny">Long audio stays in its original folder or drive. The timer stores the file reference, Eastern timestamp, session elapsed time, location/path note, and evidence note. On desktop Chrome, the app can also store a file handle when the browser permits it. On phones, LST uses the mobile file picker; after closing or reloading the page, tap Relink File if the browser no longer grants access to that recording.</div></div></div>
-<aside class="history glass"><div class="histHead"><h2>Session History</h2><div class="histHeadBtns"><button id="importHistoryBtn" type="button" title="Import the app's history CSV or a JSON array of sessions">Import</button><button id="exportHistoryCsv" type="button" title="Download all saved sessions as a CSV file">Export CSV</button></div></div><div class="searchBar"><input id="historySearch" type="search" placeholder="Filter history..." aria-label="Filter session history"></div><div id="historySummary" class="tiny histSummary" aria-live="polite"></div><div id="history" class="hist"></div>
+<aside class="history glass"><div class="histHead"><h2>Session History</h2><div class="histHeadBtns"><button id="importHistoryBtn" type="button" title="Import the app's history CSV or a JSON array of sessions">Import</button><button id="importPdfBtn" type="button" title="Read sessions from a text PDF. Scanned image-only PDFs cannot be read.">Import PDF</button><button id="exportHistoryCsv" type="button" title="Download all saved sessions as a CSV file">Export CSV</button></div></div><div class="searchBar"><input id="historySearch" type="search" placeholder="Filter history..." aria-label="Filter session history"></div><div id="historySummary" class="tiny histSummary" aria-live="polite"></div><div id="history" class="hist"></div>
 <div id="historyEditor" class="editorPanel" style="display:none">
 <h3>Edit Saved Session</h3>
 <div class="editorGrid">
@@ -510,7 +510,7 @@ body.dropping::after{content:"Drop screenshots to attach";position:fixed;inset:1
 <div class="editorActions"><button id="saveEdit">Save Changes</button><button id="cancelEdit">Cancel</button></div>
 </div></aside>
 </section>
-<div class="footer"><button id="newBtn">New Session</button><button id="saveBtn">Save Session</button><button id="sessionExportBtn">Export Session</button><button id="sessionImportBtn">Import Session</button><button id="textBtn">Export Text</button><button id="pdfBtn">Export PDF</button></div><input id="sessionImportInput" type="file" accept=".lst,application/json,text/plain" hidden><input id="historyImportInput" type="file" accept=".csv,text/csv,.json,application/json" hidden>
+<div class="footer"><button id="newBtn">New Session</button><button id="saveBtn">Save Session</button><button id="sessionExportBtn">Export Session</button><button id="sessionImportBtn">Import Session</button><button id="textBtn">Export Text</button><button id="pdfBtn">Export PDF</button></div><input id="sessionImportInput" type="file" accept=".lst,application/json,text/plain" hidden><input id="historyImportInput" type="file" accept=".csv,text/csv,.json,application/json" hidden><input id="historyPdfInput" type="file" accept="application/pdf,.pdf" hidden>
 <section class="settingsCard glass" id="settingsCard" aria-labelledby="settingsTitle">
 <h2 id="settingsTitle">Settings</h2>
 <div class="setGrid">
@@ -659,10 +659,10 @@ function renderHistory(){
   let sum=$("historySummary");
   let totals=completedTotals(h);
   if(sum) sum.textContent=h.length?("Completed "+totals.count+" · Active "+dur(totals.activeMs)+(totals.planned?" · Upcoming "+totals.planned:"")):"";
-  if(!h.length){w.innerHTML='<div class="tiny">No saved sessions yet.</div>';return}
+  if(!h.length){w.innerHTML='<div class="tiny">No saved sessions yet.</div>';appendHistoryTotal(w,h);return}
   let rows=h.map((r,i)=>({r,i}));
   if(q) rows=rows.filter(({r})=>historySearchText(r).includes(q));
-  if(!rows.length){w.innerHTML='<div class="tiny">No sessions match this filter.</div>';return}
+  if(!rows.length){w.innerHTML='<div class="tiny">No sessions match this filter.</div>';appendHistoryTotal(w,h);return}
   let planned=rows.filter(({r})=>planStatusOf(r)==="planned").sort((a,b)=>(a.r.start||0)-(b.r.start||0));
   let done=rows.filter(({r})=>planStatusOf(r)!=="planned");
   if(planned.length){
@@ -673,6 +673,13 @@ function renderHistory(){
     if(planned.length) w.appendChild(historySectionLabel("Completed"));
     done.forEach(item=>w.appendChild(historyCard(item,false)));
   }
+  appendHistoryTotal(w,h);
+}
+function appendHistoryTotal(w,h){
+  let totals=completedTotals(h),n=totals.count,row=document.createElement("div"),strong=document.createElement("strong"),sm=document.createElement("div");
+  row.className="histItem histTotal";row.id="historyTotal";row.setAttribute("role","status");
+  strong.textContent="Total";sm.className="small";sm.textContent=n+" completed session"+(n===1?"":"s")+" · Active "+dur(totals.activeMs);
+  row.append(strong,sm);w.appendChild(row);
 }
 async function deleteHistorySession(i){let h=history(),r=h[i];if(!r)return;let ok=confirm(`Delete ${r.id||"this session"} from Session History?\n\nThis permanently removes the saved session record and stored screenshot copies from this browser. External audio files are NOT deleted.`);if(!ok)return;for(let a of (r.attachments||[]))await deleteAsset(a.id);for(let a of (r.audioRefs||[]))await deleteAudioHandle(a.id);let wasLoaded=loadedHistoryKey===sessionKey(r);h.splice(i,1);writeHistory(h);if(editingIndex===i)closeEditor();else if(editingIndex!==null&&editingIndex>i)editingIndex--;renderHistory();if(wasLoaded){hideHistoryNotice();fresh()}else persist()}
 async function deleteLoadedHistorySession(){if(!loadedHistoryKey)return;let h=history(),i=h.findIndex(r=>sessionKey(r)===loadedHistoryKey);if(i<0){hideHistoryNotice();persist();return}await deleteHistorySession(i)}
@@ -1486,6 +1493,204 @@ function onAddBannerKey(e){
     confirmPendingAdd();
   }
 }
+
+const PDFJS_CDN="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs";
+const PDFJS_WORKER="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs";
+let pdfjsLoad=null;
+function loadPdfJs(){
+  if(pdfjsLoad) return pdfjsLoad;
+  pdfjsLoad=import(PDFJS_CDN).then(mod=>{
+    let lib=mod&&mod.getDocument?mod:(mod&&mod.default&&mod.default.getDocument?mod.default:null);
+    if(!lib) throw new Error("PDF reader could not be loaded.");
+    if(lib.GlobalWorkerOptions) lib.GlobalWorkerOptions.workerSrc=PDFJS_WORKER;
+    return lib;
+  }).catch(err=>{
+    pdfjsLoad=null;
+    let msg=err&&err.message?err.message:"";
+    if(/PDF reader could not be loaded/.test(msg)) throw err;
+    throw new Error("PDF reader could not be loaded. Check your connection and try again.");
+  });
+  return pdfjsLoad;
+}
+function parseSpecialStamp(v){
+  let s=String(v||"").trim().toUpperCase().replace(/[\u00a0\u202f]/g," ").replace(/\s+/g," ");
+  if(!s||s==="-") return null;
+  let m=s.match(/([A-Z]+)\s+(\d{1,2}),\s*(\d{4})\s+AT\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?/);
+  if(!m) return null;
+  let months={JANUARY:1,FEBRUARY:2,MARCH:3,APRIL:4,MAY:5,JUNE:6,JULY:7,AUGUST:8,SEPTEMBER:9,OCTOBER:10,NOVEMBER:11,DECEMBER:12};
+  let mo=months[m[1]];
+  if(!mo) return null;
+  let h=+m[4],mi=+m[5],sec=+(m[6]||0),ap=m[7]||"";
+  if(ap==="PM"&&h<12) h+=12;
+  if(ap==="AM"&&h===12) h=0;
+  if(h>23||mi>59||sec>59) return null;
+  return etPartsToEpoch(+m[3],mo,+m[2],h,mi,sec);
+}
+async function pdfTextItems(data){
+  let lib=await loadPdfJs();
+  let task=lib.getDocument({data,isEvalSupported:false,useSystemFonts:false});
+  let doc=await task.promise,items=[];
+  try{
+    for(let p=1;p<=doc.numPages;p++){
+      let page=await doc.getPage(p),tc=await page.getTextContent();
+      for(let it of tc.items){
+        if(!it||it.str==null||!String(it.str).trim()) continue;
+        let tr=it.transform||[1,0,0,1,0,0];
+        items.push({page:p,x:tr[4],y:tr[5],str:String(it.str)});
+      }
+    }
+  }finally{try{await doc.destroy()}catch(e){}}
+  return items;
+}
+function pdfLines(items){
+  let groups=[];
+  items.forEach(it=>{
+    let g=groups.find(row=>row.page===it.page&&Math.abs(row.y-it.y)<2.2);
+    if(!g){g={page:it.page,y:it.y,parts:[]};groups.push(g)}
+    g.parts.push(it);
+  });
+  groups.sort((a,b)=>a.page-b.page||b.y-a.y);
+  return groups.map(g=>{
+    g.parts.sort((a,b)=>a.x-b.x);
+    let text="";
+    g.parts.forEach((part,i)=>{
+      if(i&&part.x-g.parts[i-1].x>8) text+=" ";
+      text+=part.str;
+    });
+    return text.replace(/[ \t]+/g," ").trim();
+  }).filter(Boolean);
+}
+function ownPdfBlocks(items){
+  let marks=[];
+  items.forEach(it=>{if(it.str.trim()==="SESSION RECORD") marks.push(it.page)});
+  marks=[...new Set(marks)].sort((a,b)=>a-b);
+  if(!marks.length) return null;
+  return marks.map((page,i)=>{
+    let next=marks[i+1];
+    return items.filter(it=>it.page>=page&&(next==null||it.page<next));
+  });
+}
+function ownFieldMap(items){
+  let labels=["SESSION ID","TITLE","DATE","STATUS","START","END","ACTIVE TIME","PAUSED TIME","WALL TIME"];
+  let map={};
+  labels.forEach(label=>{
+    let lab=items.find(it=>it.str.trim()===label);
+    if(!lab) return;
+    let below=items.filter(it=>it.page===lab.page&&it!==lab&&it.y<lab.y-3&&Math.abs(it.x-lab.x)<90&&!labels.includes(it.str.trim())).sort((a,b)=>b.y-a.y);
+    let val=below.find(it=>lab.y-it.y<28);
+    if(val) map[label]=val.str.trim();
+  });
+  return map;
+}
+function notesFromPdfLines(lines){
+  let notes=[],cur=null,skip=/^(LOOPOLOGY SESSION TIMER|SESSION RECORD|SESSION NOTES|SESSION NOTES - CONTINUED|AUDIO FILE REFERENCES|AUDIO FILE REFERENCES - CONTINUED|PAGE \d+ OF \d+)$/;
+  let shot=/^SESSION SCREENSHOT\b/;
+  lines.forEach(line=>{
+    if(skip.test(line)||shot.test(line)||/^LOOPOLOGY SESSION TIMER \|/.test(line)){if(cur){notes.push(cur);cur=null}return}
+    let m=line.match(/^(\d{2})\s+\[(.+?)\s\|\sSESSION \+([0-9:]+)\]$/);
+    if(m){if(cur) notes.push(cur);cur={clock:m[2]==="-"?"":m[2],elapsed:m[3]||"00:00:00",text:""};return}
+    if(!cur) return;
+    cur.text=cur.text?cur.text+" "+line:line;
+  });
+  if(cur) notes.push(cur);
+  return notes.map(n=>{n.text=(n.text||"").replace(/\s+/g," ").trim();return n}).filter(n=>n.text);
+}
+function sessionFromOwnBlock(items){
+  let f=ownFieldMap(items);
+  if(!f["SESSION ID"]&&!f["TITLE"]&&!f["START"]&&!f["END"]) return null;
+  let entry={},status=f["STATUS"]&&f["STATUS"]!=="-"?f["STATUS"]:"";
+  if(f["SESSION ID"]&&f["SESSION ID"]!=="-") entry.id=f["SESSION ID"];
+  if(f["TITLE"]&&f["TITLE"]!=="-") entry.title=f["TITLE"];
+  if(f["DATE"]&&/^\d{4}-\d{2}-\d{2}$/.test(f["DATE"])) entry.date=f["DATE"];
+  if(status) entry.status=status;
+  entry.planStatus=status.toUpperCase()==="PLANNED"?"planned":"done";
+  let start=parseSpecialStamp(f["START"]),stop=parseSpecialStamp(f["END"]);
+  if(start!=null) entry.start=start;
+  if(stop!=null) entry.stop=stop;
+  let active=parseDurationMs(f["ACTIVE TIME"]),paused=parseDurationMs(f["PAUSED TIME"]),wall=parseDurationMs(f["WALL TIME"]);
+  if(active!=null) entry.activeMs=active;
+  if(paused!=null) entry.pausedMs=paused;
+  if(wall!=null) entry.wallMs=wall;
+  let notes=notesFromPdfLines(pdfLines(items));
+  if(notes.length) entry.notes=notes;
+  return entry;
+}
+function parseOwnPdfSessions(items){
+  let branded=items.some(it=>/LOOPOLOGY SESSION TIMER/i.test(it.str));
+  let blocks=ownPdfBlocks(items);
+  if(!branded||!blocks) return null;
+  return blocks.map(sessionFromOwnBlock).filter(Boolean);
+}
+function peelTrailingId(text){
+  let title=String(text||"").trim(),id="";
+  let m=title.match(/(?:^|\s)(?:id|session)\s*:\s*([A-Za-z0-9][A-Za-z0-9_-]{0,78})\s*$/i);
+  if(m){id=m[1];title=title.slice(0,m.index).trim()}
+  return {id,title};
+}
+function usDateToIso(v){
+  let m=String(v||"").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if(!m) return "";
+  let y=+m[3]; if(y<100) y+=2000;
+  return String(y).padStart(4,"0")+"-"+String(+m[1]).padStart(2,"0")+"-"+String(+m[2]).padStart(2,"0");
+}
+function rangeEntry(date,startClock,endDate,endClock,rest){
+  let start=combineDateAndTime(date,startClock);
+  let stop=combineDateAndTime(endDate||date,endClock);
+  if(stop<=start&&!endDate) stop=combineDateAndTime(date,endClock)+86400000;
+  let peeled=peelTrailingId(rest);
+  let entry={date,start,stop,planStatus:"done",status:"COMPLETED"};
+  if(peeled.id) entry.id=peeled.id;
+  if(peeled.title) entry.title=peeled.title;
+  let active=Math.max(0,stop-start);
+  entry.activeMs=active;entry.wallMs=active;entry.pausedMs=0;
+  return entry;
+}
+function parseGenericPdf(items){
+  let out=[],lines=pdfLines(items);
+  let rangeA=/^(\d{4}-\d{2}-\d{2})[ T](\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AaPp][Mm])?)\s*(?:-|–|—|\bto\b)\s*(?:(\d{4}-\d{2}-\d{2})[ T])?(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AaPp][Mm])?)\s*(.*)$/i;
+  let rangeB=/^(\d{1,2}\/\d{1,2}\/\d{2,4})\s+(\d{1,2}:\d{2}(?::\d{2})?\s*[AaPp][Mm])\s*(?:-|–|—|\bto\b)\s*(\d{1,2}:\d{2}(?::\d{2})?\s*[AaPp][Mm])\s*(.*)$/;
+  let rangeC=/^start\s*:\s*(.+?)\s+end\s*:\s*(.+)$/i;
+  lines.forEach(line=>{
+    let a=line.match(rangeA);
+    if(a){try{out.push(rangeEntry(a[1],a[2],a[3]||"",a[4],a[5]||""))}catch(e){}return}
+    let b=line.match(rangeB);
+    if(b){let iso=usDateToIso(b[1]);if(!iso) return;try{out.push(rangeEntry(iso,b[2],"",b[3],b[4]||""))}catch(e){}return}
+    let c=line.match(rangeC);
+    if(c){
+      let st=parseWhen(c[1].trim()),en=parseWhen(c[2].trim());
+      if(st==null||en==null||en<st) return;
+      let entry={start:st,stop:en,planStatus:"done",status:"COMPLETED",activeMs:en-st,wallMs:en-st,pausedMs:0,date:etDateString(st)};
+      out.push(entry);
+    }
+  });
+  return out;
+}
+function openPdfConfirm(entries){
+  let parts=partitionNew(entries);
+  let prompt=addPrompt(parts);
+  pendingAdd={canAdd:parts.fresh.length>0,entries:parts.fresh,source:"pdf"};
+  showAddBanner({title:prompt.title,detail:prompt.detail,canAdd:pendingAdd.canAdd,items:parts.fresh.length?parts.fresh:parts.dup});
+}
+async function onHistoryPdfFile(file){
+  if(!file) return;
+  try{
+    let bytes=new Uint8Array(await file.arrayBuffer());
+    let items=await pdfTextItems(bytes);
+    if(!items.length){
+      openAddError("This PDF has no selectable text. Scanned or image-only PDFs can't be read.","pdf");
+      return;
+    }
+    let own=parseOwnPdfSessions(items);
+    let entries=own!=null?own:parseGenericPdf(items);
+    if(!entries.length){
+      openAddError("No sessions were found in this PDF. Loopology session exports and lines with a start and end time can be imported.","pdf");
+      return;
+    }
+    openPdfConfirm(normalizeEntryList(entries));
+  }catch(err){
+    openAddError(err&&err.message?err.message:"Could not read this PDF.","pdf");
+  }
+}
 function bindAssistantHistory(){
   let imp=$("importHistoryBtn"),input=$("historyImportInput");
   if(imp&&input){
@@ -1494,6 +1699,15 @@ function bindAssistantHistory(){
       let file=input.files&&input.files[0];
       input.value="";
       if(file) await onHistoryImportFile(file);
+    });
+  }
+  let pdfBtn=$("importPdfBtn"),pdfInput=$("historyPdfInput");
+  if(pdfBtn&&pdfInput){
+    pdfBtn.addEventListener("click",()=>{pdfInput.value="";pdfInput.click()});
+    pdfInput.addEventListener("change",async()=>{
+      let file=pdfInput.files&&pdfInput.files[0];
+      pdfInput.value="";
+      if(file) await onHistoryPdfFile(file);
     });
   }
   if($("addEntryConfirm")) $("addEntryConfirm").addEventListener("click",confirmPendingAdd);
