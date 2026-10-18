@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><meta name="theme-color" content="#111"><meta name="mobile-web-app-capable" content="yes">
+<title>Loopology Session Timer — LST-10</title>
+<style>
+
+:root{
+  --bg:#050505;--bg2:#0a0a0a;--glass:#111214;--glass2:#090a0b;
+  --line:rgba(255,255,255,.16);--line2:rgba(255,255,255,.28);
+  --text:#f2f0ea;--muted:#a6a6a6;--dim:#717171;--shadow:rgba(0,0,0,.72);
+  --radius:13px;--fieldRadius:11px;
+  --accent:#9a9a9a;--accent2:#c8c8c8;
+  --glow-run:rgba(120,255,180,.45);--glow-run-soft:rgba(80,220,140,.22);--glow-run-timer:rgba(120,255,180,.12);
+  --glow-pause:rgba(255,200,90,.4);--glow-pause-soft:rgba(255,180,60,.18);
+  --glow-done:rgba(140,180,255,.35);
+  --grad1:rgba(255,255,255,.085);--grad2:rgba(255,255,255,.035);
+  --body-a:#090909;--body-b:#050505;--body-c:#080808;
+  --glass-top:rgba(29,30,32,.82);--glass-mid:rgba(10,10,11,.93);--glass-bot:rgba(5,5,5,.97);
+  --theme-swatch:#2a2a2a;
+}
+[data-theme="obsidian"]{
+  --accent:#b0b0b0;--accent2:#e0e0e0;
+  --glow-run:rgba(120,255,180,.45);--glow-run-soft:rgba(80,220,140,.22);--glow-run-timer:rgba(120,255,180,.12);
+  --glow-pause:rgba(255,200,90,.4);--glow-pause-soft:rgba(255,180,60,.18);
+  --glow-done:rgba(140,180,255,.35);
+  --grad1:rgba(255,255,255,.085);--grad2:rgba(255,255,255,.035);
+  --body-a:#090909;--body-b:#050505;--body-c:#080808;
+  --glass-top:rgba(29,30,32,.82);--glass-mid:rgba(10,10,11,.93);--glass-bot:rgba(5,5,5,.97);
+  --theme-swatch:#3a3a3a;
+}
+[data-theme="midnight"]{
+  --bg:#03060f;--bg2:#070b18;--glass:#0c1220;--glass2:#060a14;
+  --line:rgba(120,160,255,.18);--line2:rgba(140,180,255,.28);
+  --text:#e8eef8;--muted:#8a9bb8;--dim:#5a6a88;
+  --accent:#6b9fff;--accent2:#a8c8ff;
+  --glow-run:rgba(80,220,255,.5);--glow-run-soft:rgba(60,180,255,.25);--glow-run-timer:rgba(80,200,255,.15);
+  --glow-pause:rgba(255,190,100,.45);--glow-pause-soft:rgba(255,170,70,.2);
+  --glow-done:rgba(140,160,255,.4);
+  --grad1:rgba(80,120,255,.12);--grad2:rgba(40,80,200,.08);
+  --body-a:#060b18;--body-b:#03060f;--body-c:#081020;
+  --glass-top:rgba(18,28,48,.85);--glass-mid:rgba(8,12,24,.94);--glass-bot:rgba(3,6,14,.98);
+  --theme-swatch:#3a5a9a;
+}
+[data-theme="emerald"]{
+  --bg:#030a07;--bg2:#061410;--glass:#0c1a14;--glass2:#050f0b;
+  --line:rgba(100,220,160,.16);--line2:rgba(120,240,180,.26);
+  --text:#e8f5ee;--muted:#7aab96;--dim:#4a7a66;
+  --accent:#3dd68c;--accent2:#8af0b8;
+  --glow-run:rgba(60,255,160,.5);--glow-run-soft:rgba(40,220,120,.28);--glow-run-timer:rgba(60,255,160,.14);
+  --glow-pause:rgba(255,210,90,.42);--glow-pause-soft:rgba(255,190,60,.2);
+  --glow-done:rgba(100,200,255,.35);
+  --grad1:rgba(40,200,120,.1);--grad2:rgba(20,140,80,.07);
+  --body-a:#061410;--body-b:#030a07;--body-c:#081812;
+  --glass-top:rgba(16,36,28,.85);--glass-mid:rgba(6,16,12,.94);--glass-bot:rgba(3,10,7,.98);
+  --theme-swatch:#2a8a5a;
+}
+[data-theme="amber"]{
+  --bg:#0a0804;--bg2:#141008;--glass:#1a160c;--glass2:#0c0a05;
+  --line:rgba(255,200,100,.16);--line2:rgba(255,210,120,.28);
+  --text:#f8f0e0;--muted:#b0a080;--dim:#786850;
+  --accent:#f0a030;--accent2:#ffd080;
+  --glow-run:rgba(255,200,80,.5);--glow-run-soft:rgba(255,180,40,.25);--glow-run-timer:rgba(255,200,80,.14);
+  --glow-pause:rgba(255,140,60,.45);--glow-pause-soft:rgba(255,120,40,.22);
+  --glow-done:rgba(200,160,255,.35);
+  --grad1:rgba(255,180,60,.1);--grad2:rgba(200,120,20,.07);
+  --body-a:#141008;--body-b:#0a0804;--body-c:#181208;
+  --glass-top:rgba(40,32,16,.85);--glass-mid:rgba(16,12,6,.94);--glass-bot:rgba(8,6,3,.98);
+  --theme-swatch:#c08020;
+}
+[data-theme="violet"]{
+  --bg:#08050e;--bg2:#100a1a;--glass:#16101f;--glass2:#0a0612;
+  --line:rgba(180,120,255,.16);--line2:rgba(200,140,255,.28);
+  --text:#f0eaf8;--muted:#a090b8;--dim:#685878;
+  --accent:#b070ff;--accent2:#d8b0ff;
+  --glow-run:rgba(180,120,255,.5);--glow-run-soft:rgba(160,100,255,.25);--glow-run-timer:rgba(180,120,255,.14);
+  --glow-pause:rgba(255,180,120,.42);--glow-pause-soft:rgba(255,160,90,.2);
+  --glow-done:rgba(120,200,255,.35);
+  --grad1:rgba(140,80,255,.12);--grad2:rgba(100,40,200,.08);
+  --body-a:#100a1a;--body-b:#08050e;--body-c:#140e1e;
+  --glass-top:rgba(32,20,48,.85);--glass-mid:rgba(12,8,20,.94);--glass-bot:rgba(6,4,12,.98);
+  --theme-swatch:#7040b0;
+}
+[data-theme="crimson"]{
+  --bg:#0c0406;--bg2:#16080c;--glass:#1c0c12;--glass2:#0e0508;
+  --line:rgba(255,100,120,.16);--line2:rgba(255,120,140,.28);
+  --text:#f8eae8;--muted:#b08088;--dim:#785058;
+  --accent:#ff4060;--accent2:#ff90a0;
+  --glow-run:rgba(255,80,100,.5);--glow-run-soft:rgba(255,60,80,.25);--glow-run-timer:rgba(255,80,100,.14);
+  --glow-pause:rgba(255,180,80,.45);--glow-pause-soft:rgba(255,160,50,.2);
+  --glow-done:rgba(160,140,255,.35);
+  --grad1:rgba(255,60,80,.1);--grad2:rgba(180,20,40,.08);
+  --body-a:#16080c;--body-b:#0c0406;--body-c:#1a0a10;
+  --glass-top:rgba(42,16,22,.85);--glass-mid:rgba(18,8,12,.94);--glass-bot:rgba(10,4,6,.98);
+  --theme-swatch:#a02838;
+}
+[data-theme="arctic"]{
+  --bg:#04080c;--bg2:#081218;--glass:#0e1a22;--glass2:#060e14;
+  --line:rgba(100,200,220,.16);--line2:rgba(120,220,240,.28);
+  --text:#e8f4f8;--muted:#7aa0b0;--dim:#4a7080;
+  --accent:#40d0e8;--accent2:#90e8f8;
+  --glow-run:rgba(60,220,240,.5);--glow-run-soft:rgba(40,200,220,.25);--glow-run-timer:rgba(60,220,240,.14);
+  --glow-pause:rgba(255,200,100,.42);--glow-pause-soft:rgba(255,180,60,.2);
+  --glow-done:rgba(140,160,255,.4);
+  --grad1:rgba(40,180,220,.1);--grad2:rgba(20,120,160,.07);
+  --body-a:#081218;--body-b:#04080c;--body-c:#0a141c;
+  --glass-top:rgba(16,32,42,.85);--glass-mid:rgba(6,14,20,.94);--glass-bot:rgba(3,8,12,.98);
+  --theme-swatch:#2888a0;
+}
+[data-theme="graphite"]{
+  --bg:#0a0a0c;--bg2:#121216;--glass:#18181c;--glass2:#0c0c0e;
+  --line:rgba(180,180,200,.14);--line2:rgba(200,200,220,.24);
+  --text:#ececf0;--muted:#9898a8;--dim:#606070;
+  --accent:#8890a8;--accent2:#c0c4d0;
+  --glow-run:rgba(140,200,180,.45);--glow-run-soft:rgba(100,180,150,.22);--glow-run-timer:rgba(140,200,180,.12);
+  --glow-pause:rgba(220,180,100,.4);--glow-pause-soft:rgba(200,160,70,.18);
+  --glow-done:rgba(140,160,220,.35);
+  --grad1:rgba(160,160,180,.08);--grad2:rgba(100,100,120,.05);
+  --body-a:#121216;--body-b:#0a0a0c;--body-c:#141418;
+  --glass-top:rgba(32,32,38,.85);--glass-mid:rgba(14,14,18,.94);--glass-bot:rgba(8,8,10,.98);
+  --theme-swatch:#585868;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"Neue Montreal","Helvetica Neue",Arial,sans-serif;font-weight:300}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(1100px 700px at 18% -5%,var(--grad1),transparent 54%),
+    radial-gradient(800px 520px at 94% 16%,var(--grad2),transparent 62%),
+    linear-gradient(145deg,var(--body-a) 0%,var(--body-b) 42%,var(--body-c) 100%);
+  transition:background .45s ease,color .3s ease;
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.32;background:
+  linear-gradient(116deg,transparent 0 14%,rgba(255,255,255,.018) 20%,transparent 27%),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.008) 0 1px,transparent 1px 5px)}
+body:after{content:"";position:fixed;inset:-25%;pointer-events:none;z-index:0;background:linear-gradient(112deg,transparent 34%,rgba(255,255,255,.045) 44%,rgba(255,255,255,.09) 48%,rgba(255,255,255,.02) 53%,transparent 63%);transform:translateX(-38%) rotate(-4deg);filter:blur(1px);opacity:.7}
+.app{position:relative;z-index:1;max-width:1500px;margin:auto;padding:22px}
+.glass{position:relative;overflow:hidden;background:linear-gradient(165deg,var(--glass-top),var(--glass-mid) 62%,var(--glass-bot));border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(255,255,255,.025),0 22px 48px rgba(0,0,0,.42);backdrop-filter:blur(17px) saturate(.55);-webkit-backdrop-filter:blur(17px) saturate(.55);transition:border-color .35s ease,background .45s ease}
+.glass:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(112deg,transparent 0 32%,rgba(255,255,255,.055) 44%,rgba(255,255,255,.012) 50%,transparent 61%);opacity:.4}
+header{border-radius:14px;padding:22px 24px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:88px;flex-wrap:wrap}
+.brand h1{position:relative;margin:0;font-size:clamp(26px,3.1vw,44px);letter-spacing:.075em;font-weight:700;line-height:1;text-transform:uppercase}
+.headerRight{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sub{display:none}
+.themePicker{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.25)}
+.themePicker label{font-size:8px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:0;white-space:nowrap}
+.themeSwatches{display:flex;gap:5px;align-items:center}
+.themeSwatch{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;background:var(--swatch, #333);box-shadow:inset 0 1px rgba(255,255,255,.15),0 2px 6px rgba(0,0,0,.4);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.themeSwatch:hover{transform:scale(1.12)}
+.themeSwatch.active{border-color:var(--text);box-shadow:0 0 0 1px var(--line),0 0 10px rgba(255,255,255,.15)}
+.themeSwatch:focus-visible{outline:1px solid var(--accent2);outline-offset:2px}
+.chip{position:relative;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.025);border-radius:9px;padding:10px 14px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;height:max-content;box-shadow:inset 0 1px rgba(255,255,255,.07),0 8px 20px rgba(0,0,0,.28);transition:border-color .25s ease,box-shadow .25s ease}
+.chip.running{border-color:var(--glow-run);box-shadow:inset 0 1px rgba(255,255,255,.07),0 0 18px var(--glow-run-soft),0 8px 20px rgba(0,0,0,.28)}
+.chip.paused{border-color:var(--glow-pause);box-shadow:inset 0 1px rgba(255,255,255,.07),0 0 16px var(--glow-pause-soft),0 8px 20px rgba(0,0,0,.28)}
+.chip.completed{border-color:var(--glow-done)}
+.timer.running{text-shadow:0 1px 0 rgba(255,255,255,.16),0 12px 36px rgba(0,0,0,.55),0 0 40px var(--glow-run-timer)}
+.searchBar{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.searchBar input{flex:1;padding:9px 11px;font-size:13px;min-height:0}
+.shortcutHint{font-size:9px;color:var(--dim);letter-spacing:.06em;margin-top:8px;line-height:1.5}
+.autosaveDot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3a3a3a;margin-right:6px;vertical-align:middle;transition:background .3s}
+.autosaveDot.saved{background:#5ad48a}
+.controls{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.field{border-radius:var(--fieldRadius);padding:13px 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 13px 28px rgba(0,0,0,.48),0 2px 6px rgba(0,0,0,.7)}
+label,.k{display:block;font-size:11px;color:#d8d8d8;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+input,textarea,select{font-family:"Neue Montreal","Helvetica Neue",Arial,sans-serif}
+input,.metaText,.editorField input,.editorField textarea,.editorField select,.editNote input,.editNote textarea,#note{
+  color:var(--text);outline:none;
+  background-image:
+    linear-gradient(112deg,transparent 0 35%,rgba(255,255,255,.00) 43%,rgba(255,255,255,.22) 49%,rgba(255,255,255,.055) 55%,transparent 64%),
+    linear-gradient(180deg,rgba(19,19,20,.96),rgba(7,7,8,.98));
+  background-repeat:no-repeat;
+  background-size:260% 100%,100% 100%;
+  background-position:155% 0,0 0;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:var(--fieldRadius);
+  box-shadow:inset 0 1px rgba(255,255,255,.07),inset 0 -1px rgba(0,0,0,.8),0 12px 25px rgba(0,0,0,.55),0 3px 7px rgba(0,0,0,.72);
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+  font-weight:300;
+}
+input{width:100%;padding:10px 11px;font-size:15px}
+.metaText{width:100%;min-height:48px;max-width:100%;padding:10px 11px;font-size:15px;line-height:1.35;resize:vertical;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+input:focus,.metaText:focus,.editorField input:focus,.editorField textarea:focus,.editorField select:focus,.editNote input:focus,.editNote textarea:focus,#note:focus{border-color:rgba(255,255,255,.46);box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 0 1px rgba(255,255,255,.05),0 18px 34px rgba(0,0,0,.68),0 4px 10px rgba(0,0,0,.76)}
+.glassFlash{animation:fieldSweep .42s cubic-bezier(.19,.72,.2,1)}
+@keyframes fieldSweep{0%{background-position:160% 0,0 0}100%{background-position:-55% 0,0 0}}
+.timerbox{border-radius:15px;padding:25px 28px 28px;text-align:center;margin-bottom:14px}
+.specialDateTime{position:relative;color:#c6c6c6;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin:1px 0 14px}
+.timer{position:relative;font-variant-numeric:tabular-nums lining-nums;font-weight:300;font-size:clamp(74px,12vw,180px);line-height:.92;letter-spacing:.025em;margin:8px 0 27px;color:#f3f1eb;text-shadow:0 1px 0 rgba(255,255,255,.16),0 12px 36px rgba(0,0,0,.55)}
+.stats{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}.stat{border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(17,17,18,.94),rgba(7,7,7,.97));border-radius:10px;padding:12px;box-shadow:inset 0 1px rgba(255,255,255,.055),0 8px 18px rgba(0,0,0,.32)}
+.k{font-size:10px;color:#c6c6c6;margin-bottom:5px}.v{font-variant-numeric:tabular-nums;font-size:15px;font-weight:300;color:#f0eee8}
+button{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.18);color:var(--text);background-image:linear-gradient(112deg,transparent 0 34%,rgba(255,255,255,0) 43%,rgba(255,255,255,.22) 49%,rgba(255,255,255,.045) 55%,transparent 64%),linear-gradient(180deg,#1a1a1b,#080809);background-size:260% 100%,100% 100%;background-position:155% 0,0 0;background-repeat:no-repeat;box-shadow:inset 0 1px rgba(255,255,255,.08),0 10px 22px rgba(0,0,0,.40);border-radius:10px;padding:15px 13px;font-family:"Neue Montreal","Helvetica Neue",Arial,sans-serif;font-weight:700;letter-spacing:.105em;text-transform:uppercase;cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+button:hover{border-color:rgba(255,255,255,.42);box-shadow:inset 0 1px rgba(255,255,255,.11),0 14px 28px rgba(0,0,0,.5)}button:active{transform:translateY(1px)}button:focus-visible{outline:1px solid rgba(255,255,255,.8);outline-offset:2px}button:disabled{opacity:.30;cursor:not-allowed}
+button.glassFlash{animation:fieldSweep .38s cubic-bezier(.19,.72,.2,1)}
+.lower{display:grid;grid-template-columns:1.7fr .8fr;gap:14px}.notes,.history{border-radius:14px;padding:19px}
+h2{position:relative;font-size:17px;letter-spacing:.115em;text-transform:uppercase;margin:0 0 13px;font-weight:700}h3{font-weight:700}
+#note,textarea{width:100%;min-height:110px;padding:13px;font-size:14px;line-height:1.45;resize:vertical;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.noteBtns{display:flex;gap:9px;margin:11px 0 15px}.noteBtns button{padding:10px 13px;font-size:10px}.log,.hist{display:flex;flex-direction:column;gap:8px;max-height:430px;overflow:auto}.entry,.histItem{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(14,14,15,.95),rgba(7,7,8,.96));border-radius:10px;padding:11px 13px;box-shadow:inset 0 1px rgba(255,255,255,.04),0 8px 18px rgba(0,0,0,.24)}.stamp{font-size:10px;color:#bdbdbd;font-variant-numeric:tabular-nums;margin-bottom:5px}.entryText{white-space:pre-wrap;line-height:1.45}.entryTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.entryTop .stamp{flex:1;min-width:0}.noteEntryActions{display:flex;gap:6px;flex:0 0 auto}.noteEntryActions button{padding:6px 8px;font-size:8px;letter-spacing:.09em;border-radius:8px}.noteEntryActions .noteDeleteBtn{border-color:rgba(255,255,255,.30)}.noteInlineEditor{margin-top:7px}.noteEditBox{width:100%;min-height:86px!important;padding:10px!important;font-size:13px!important;line-height:1.4!important;background:linear-gradient(180deg,rgba(16,16,17,.97),rgba(8,8,9,.98));color:var(--text);border:1px solid rgba(255,255,255,.22);border-radius:10px;box-shadow:inset 0 1px rgba(255,255,255,.06),0 12px 24px rgba(0,0,0,.44)}.noteEditActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.noteEditActions button{padding:8px;font-size:8px}.histItem strong{display:block;margin-bottom:4px;font-weight:700}.small{font-size:11px;color:var(--muted);line-height:1.45}.histItem button{width:100%;padding:8px;margin-top:8px;font-size:9px}.footer{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:14px}.tiny{font-size:10px;color:var(--muted);margin-top:10px;line-height:1.45}.editorPanel{margin-top:12px;border-top:1px solid var(--line);padding-top:14px}.editorPanel h3{font-size:14px;letter-spacing:.11em;text-transform:uppercase;margin:0 0 12px}.editorGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.editorField{position:relative;border:1px solid rgba(255,255,255,.13);background:#090909;border-radius:10px;padding:10px;box-shadow:0 10px 20px rgba(0,0,0,.38)}.editorField input,.editorField textarea,.editorField select{width:100%;padding:9px;font-size:12px}.editorField textarea{min-height:64px;resize:vertical}.editorWide{grid-column:1/-1}.editNotes{display:flex;flex-direction:column;gap:9px;margin-top:10px}.editNote{border:1px solid rgba(255,255,255,.12);background:#080808;border-radius:10px;padding:10px;box-shadow:0 10px 20px rgba(0,0,0,.36)}.editNoteTop{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.editNoteTop input{width:100%;padding:8px;font-size:11px}.editNote textarea{width:100%;margin-top:8px;min-height:72px;padding:9px;resize:vertical}.miniBtn{padding:8px 10px!important;font-size:9px!important}.editorActions,.historyItemActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.historyItemActions{grid-template-columns:repeat(2,1fr)}.editorActions button,.historyItemActions button{padding:9px;font-size:9px;margin-top:0!important}.deleteBtn{border-color:rgba(255,255,255,.34)!important;background:linear-gradient(180deg,#151515,#050505)!important}.historyLoadNotice{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;padding:13px 15px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:linear-gradient(180deg,rgba(26,26,27,.94),rgba(8,8,9,.96));box-shadow:inset 0 1px rgba(255,255,255,.06),0 14px 28px rgba(0,0,0,.34)}.historyLoadNotice[hidden]{display:none!important}.historyLoadNotice strong{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}.historyLoadNotice .noticeText{font-size:11px;color:var(--muted);line-height:1.45}.historyLoadNotice button{flex:0 0 auto;padding:10px 13px;font-size:9px}
+
+.attachmentsSection{position:relative;margin-top:17px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}
+.attachHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.attachHead h3{margin:0;font-size:14px;letter-spacing:.11em;text-transform:uppercase;font-weight:700}.attachHead button{padding:9px 12px;font-size:9px;white-space:nowrap}
+.attachmentsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.attachmentCard{position:relative;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(14,14,15,.96),rgba(6,6,7,.98));border-radius:11px;padding:9px;box-shadow:inset 0 1px rgba(255,255,255,.045),0 11px 24px rgba(0,0,0,.38)}
+.attachmentThumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:#050505;cursor:zoom-in;box-shadow:0 7px 18px rgba(0,0,0,.42)}
+.attachmentName{font-size:11px;font-weight:700;line-height:1.25;margin-top:8px;overflow-wrap:anywhere}.attachmentMeta{font-size:9px;color:#aaa;line-height:1.45;margin-top:4px;font-variant-numeric:tabular-nums}.attachmentCaption{width:100%;min-height:38px!important;margin-top:7px;padding:8px!important;font-size:11px!important;line-height:1.3!important;resize:vertical;background:linear-gradient(180deg,rgba(16,16,17,.97),rgba(8,8,9,.98));color:var(--text);border:1px solid rgba(255,255,255,.16);border-radius:10px;outline:none;box-shadow:inset 0 1px rgba(255,255,255,.06),0 12px 24px rgba(0,0,0,.44);caret-color:#f1f1f1}.attachmentCaption::placeholder{color:#777}.attachmentCaption:focus{border-color:rgba(255,255,255,.46);box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 0 1px rgba(255,255,255,.05),0 18px 34px rgba(0,0,0,.68),0 4px 10px rgba(0,0,0,.76)}
+.attachmentActions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.attachmentActions button{padding:8px 6px;font-size:8px}.attachmentActions .removeAttachment{grid-column:1/-1}
+.assetError{padding:10px;border:1px solid rgba(255,255,255,.12);border-radius:8px;font-size:10px;color:#aaa;background:#080808}
+#imageModal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.92);backdrop-filter:blur(14px);padding:28px;align-items:center;justify-content:center}#imageModal.open{display:flex}#imageModal img{display:block;max-width:min(95vw,1600px);max-height:85vh;object-fit:contain;border:1px solid rgba(255,255,255,.2);box-shadow:0 30px 90px #000;background:#050505}#imageModal .modalBar{position:absolute;top:14px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between;gap:12px}.modalTitle{font-size:11px;letter-spacing:.08em;color:#ddd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#imageModal button{padding:9px 14px;font-size:9px}
+@media(max-width:700px){.attachmentsGrid{grid-template-columns:1fr}.attachHead{align-items:flex-start;flex-direction:column}.attachHead button{width:100%}}
+.audioSection{margin-top:18px}.audioGrid{display:flex;flex-direction:column;gap:10px}.audioCard{position:relative;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(14,14,15,.96),rgba(6,6,7,.98));border-radius:11px;padding:11px;box-shadow:inset 0 1px rgba(255,255,255,.045),0 11px 24px rgba(0,0,0,.38)}.audioTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.audioBadge{flex:0 0 auto;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:7px 9px;font-size:8px;font-weight:700;letter-spacing:.14em;color:#d9d9d9;background:#090909}.audioName{font-size:12px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}.audioMeta{font-size:9px;color:#aaa;line-height:1.45;margin-top:4px;font-variant-numeric:tabular-nums}.audioFields{display:grid;grid-template-columns:1fr;gap:8px;margin-top:9px}.audioFields label{font-size:9px;margin-bottom:5px}.audioLocation,.audioNote{width:100%;color:var(--text);background:linear-gradient(180deg,rgba(16,16,17,.97),rgba(8,8,9,.98));border:1px solid rgba(255,255,255,.16);border-radius:10px;outline:none;box-shadow:inset 0 1px rgba(255,255,255,.06),0 12px 24px rgba(0,0,0,.44);font-family:"Neue Montreal","Helvetica Neue",Arial,sans-serif;font-weight:300}.audioLocation{min-height:0!important;padding:9px!important;font-size:11px!important}.audioNote{min-height:54px!important;padding:9px!important;font-size:11px!important;line-height:1.35!important;resize:vertical}.audioLocation:focus,.audioNote:focus{border-color:rgba(255,255,255,.46);box-shadow:inset 0 1px rgba(255,255,255,.10),0 0 0 1px rgba(255,255,255,.05),0 18px 34px rgba(0,0,0,.68),0 4px 10px rgba(0,0,0,.76)}.audioActions{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:9px}.audioActions button{padding:8px 6px;font-size:8px}.audioPlayerHost{margin-top:9px}.audioPlayerHost audio{width:100%;height:36px;filter:grayscale(1) contrast(.95);opacity:.94}.audioUnavailable{padding:9px;border:1px dashed rgba(255,255,255,.15);border-radius:8px;font-size:9px;color:#9d9d9d;margin-top:8px}.editAudioCard{border:1px solid rgba(255,255,255,.12);background:#080808;border-radius:10px;padding:10px;box-shadow:0 10px 20px rgba(0,0,0,.36)}.editAudioCard input,.editAudioCard textarea{width:100%;margin-top:6px;padding:8px;font-size:11px}.editAudioCard textarea{min-height:56px}.editAudioActions{display:flex;justify-content:flex-end;margin-top:7px}.editAudioActions button{padding:7px 9px;font-size:8px}
+
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#080808}::-webkit-scrollbar-thumb{background:#2c2c2c;border:1px solid #111;border-radius:8px}
+@media(max-width:900px){.meta{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.controls{grid-template-columns:1fr 1fr}.lower{grid-template-columns:1fr}.footer{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.app{padding:9px}.meta{grid-template-columns:1fr}.timerbox{padding:17px 10px}.timer{font-size:19vw}.stat .v{font-size:13px}header{padding:15px}.headerRight{width:100%;justify-content:space-between}.themePicker{flex:1}.editorGrid{grid-template-columns:1fr}.editorWide{grid-column:auto}.editNoteTop,.editorActions,.historyItemActions{grid-template-columns:1fr}.historyLoadNotice{align-items:stretch;flex-direction:column}.historyLoadNotice button{width:100%}}
+@media print{body{background:#fff;color:#111}.controls,.footer,.history,.chip,.noteBtns,body:before,body:after{display:none!important}.glass,.stat,.entry{background:#fff!important;color:#111!important;box-shadow:none!important;border-color:#bbb!important;backdrop-filter:none!important}.app{padding:0;max-width:none}.lower{display:block}.timer{font-size:68px}.log{max-height:none;overflow:visible}.specialDateTime,label,.k,.stamp,.tiny{color:#555!important}}
+
+</style>
+
+<!-- Canva compatibility layer: Canva imports HTML/CSS but does not execute the app JavaScript.
+     Browsers disable this stylesheet immediately and retain the full Gorilla Glass interface. -->
+<style id="canvaSafe">
+html,body{
+  background:#050505 !important;
+  color:#f2f0ea !important;
+  font-family:"Neue Montreal","Helvetica Neue",Arial,sans-serif !important;
+  font-weight:300 !important;
+}
+body{
+  background:#050505 !important;
+}
+body:before,body:after,.glass:before{
+  display:none !important;
+  content:none !important;
+}
+.app{
+  position:relative !important;
+  z-index:1 !important;
+  width:100% !important;
+  max-width:1440px !important;
+  margin:0 auto !important;
+  padding:22px !important;
+  background:#050505 !important;
+}
+.glass{
+  background:#111214 !important;
+  border:1px solid #343434 !important;
+  box-shadow:0 16px 34px rgba(0,0,0,.48) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+header{
+  background:#111214 !important;
+  border-radius:14px !important;
+  min-height:88px !important;
+}
+.brand h1{
+  color:#f2f0ea !important;
+  font-size:42px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  letter-spacing:.075em !important;
+}
+.chip{
+  color:#f2f0ea !important;
+  background:#151515 !important;
+  border:1px solid #444 !important;
+  box-shadow:none !important;
+}
+.meta,.stats,.controls,.lower,.footer,.editorGrid,.editorActions,.historyItemActions{
+  position:relative !important;
+}
+.field,.stat,.entry,.histItem,.editorField,.editNote,.historyLoadNotice,.attachmentItem,.audioItem{
+  background:#0f1011 !important;
+  border:1px solid #343434 !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.42) !important;
+}
+label,.k,h2,h3,.histItem strong{
+  color:#e1e1e1 !important;
+  font-weight:700 !important;
+}
+.specialDateTime,.stamp,.small,.tiny{
+  color:#a9a9a9 !important;
+}
+.timer{
+  color:#f3f1eb !important;
+  font-size:150px !important;
+  font-weight:300 !important;
+  text-shadow:none !important;
+}
+.v{
+  color:#f0eee8 !important;
+}
+input,textarea,select,.metaText,
+.editorField input,.editorField textarea,.editorField select,
+.editNote input,.editNote textarea,#note,
+.attachmentCaption,.audioLocation,.audioNote{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  color:#f2f0ea !important;
+  background:#0a0a0b !important;
+  background-image:none !important;
+  border:1px solid #3f3f3f !important;
+  border-radius:11px !important;
+  box-shadow:0 6px 16px rgba(0,0,0,.42) !important;
+  opacity:1 !important;
+}
+input::placeholder,textarea::placeholder{
+  color:#858585 !important;
+  opacity:1 !important;
+}
+button,.deleteBtn{
+  color:#f2f0ea !important;
+  background:#151515 !important;
+  background-image:none !important;
+  border:1px solid #444 !important;
+  box-shadow:0 7px 16px rgba(0,0,0,.38) !important;
+  border-radius:10px !important;
+  font-weight:700 !important;
+}
+button:disabled{
+  color:#777 !important;
+  background:#101010 !important;
+  opacity:.55 !important;
+}
+.glassFlash,button.glassFlash{
+  animation:none !important;
+}
+.screenshotThumb,.attachmentThumb,img{
+  border-color:#3b3b3b !important;
+}
+@media(max-width:900px){
+  .timer{font-size:110px !important}
+}
+@media(max-width:520px){
+  .brand h1{font-size:30px !important}
+  .timer{font-size:72px !important}
+}
+</style>
+<script>
+// Real browsers run the application and use the full Gorilla Glass stylesheet above.
+// Canva's HTML importer does not execute this, so it receives the stable compatibility styling.
+(function(){var s=document.getElementById('canvaSafe');if(s)s.disabled=true;})();
+</script>
+
+<style id="lstPolish">
+.srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#toasts{position:fixed;right:16px;bottom:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:min(92vw,380px)}
+.toast{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:rgba(20,20,24,.94);color:#f2f2f2;border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 24px rgba(0,0,0,.35);font:14px/1.35 system-ui,sans-serif;animation:toastIn .18s ease-out}
+.toast.ok{border-color:rgba(80,200,120,.6)}.toast.err{border-color:rgba(240,80,80,.8);background:rgba(60,16,18,.96)}
+.toast span{flex:1;word-break:break-word}.toastX{background:none!important;border:0!important;color:inherit!important;font-size:18px;line-height:1;padding:0 2px!important;min-height:0!important;cursor:pointer;box-shadow:none!important}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#storageWarn{position:sticky;top:0;z-index:50;margin:0 0 10px;padding:10px 14px;border-radius:10px;background:#7a1d22;color:#fff;font:600 14px/1.35 system-ui,sans-serif}
+#storageWarn[hidden]{display:none}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #8ab4ff!important;outline-offset:2px!important}
+button:disabled{opacity:.45;cursor:not-allowed}
+.timer{font-variant-numeric:tabular-nums}
+@media (max-width:640px){.controls{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px}.controls button,.footer button{min-height:44px}.footer{display:grid!important;grid-template-columns:repeat(2,1fr);gap:8px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+<style id="lstMobile">
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom);overscroll-behavior-y:contain}
+button,.themeSwatch,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button{transition:transform .08s ease,filter .12s ease,background-color .15s ease;user-select:none;-webkit-user-select:none}
+button:not(:disabled):active{transform:scale(.96);filter:brightness(1.25)}
+#startBtn:not(:disabled){background:#1f7a46!important;color:#fff!important;border-color:#2fa862!important}
+#pauseBtn:not(:disabled){background:#9a6a12!important;color:#fff!important;border-color:#d39a2c!important}
+#resumeBtn:not(:disabled){background:#1f6a8a!important;color:#fff!important;border-color:#3aa0c8!important}
+#stopBtn:not(:disabled){background:#8a1f2a!important;color:#fff!important;border-color:#c83a4a!important}
+body[data-state=running] .timerbox{box-shadow:0 0 0 2px rgba(47,168,98,.75),0 0 28px rgba(47,168,98,.25)!important}
+body[data-state=paused] .timerbox{box-shadow:0 0 0 2px rgba(211,154,44,.8)!important}
+body[data-state=paused] #timer{animation:lstBlink 1.2s steps(2,start) infinite}
+body[data-state=completed] .timerbox{box-shadow:0 0 0 2px rgba(120,140,200,.6)!important}
+@keyframes lstBlink{50%{opacity:.45}}
+body.dropping::after{content:"Drop screenshots to attach";position:fixed;inset:12px;z-index:9998;display:flex;align-items:center;justify-content:center;border:3px dashed #8ab4ff;border-radius:18px;background:rgba(10,20,40,.7);color:#fff;font:600 22px system-ui,sans-serif;pointer-events:none}
+#imageModal{height:100dvh}
+#imageModal img{max-height:calc(100dvh - 90px);max-width:100%;object-fit:contain}
+@media (pointer:coarse){button,select,input:not([type=checkbox]):not([type=radio]){min-height:48px}.themeSwatch{min-width:40px;min-height:40px}input,textarea,select{font-size:16px!important}}
+@media (max-width:760px){.app{padding:10px!important}.meta{grid-template-columns:1fr 1fr!important}.lower{display:flex!important;flex-direction:column;gap:12px}header{flex-wrap:wrap;gap:10px}.timer{font-size:clamp(48px,17vw,96px)!important}.stats{grid-template-columns:repeat(2,1fr)!important}
+ .controls{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));z-index:40;padding:8px;border-radius:16px;background:rgba(12,12,16,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+ #toasts{left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:none}}
+@media (max-width:420px){.meta{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+<div id="srLive" class="srOnly" aria-live="polite" aria-atomic="true"></div><div id="toasts" aria-live="polite"></div><div class="app"><div id="storageWarn" role="alert" hidden><span></span></div>
+<header class="glass"><div class="brand"><h1>LOOPOLOGY SESSION TIMER</h1></div><div class="headerRight"><div class="themePicker" role="group" aria-label="Color theme"><label>Theme</label><div class="themeSwatches" id="themeSwatches"></div></div><div id="chip" class="chip">Ready</div></div></header>
+<div id="historyLoadNotice" class="historyLoadNotice" hidden><div><strong>Loaded from Session History</strong><div id="historyLoadNoticeText" class="noticeText">This is a saved archive record. Deleting it removes the saved session and stored screenshot copies from this browser. External audio files are not deleted.</div></div><button id="deleteLoadedSession" class="deleteBtn">Delete This Session</button></div>
+<section class="meta">
+<div class="field glass"><label>Session ID</label><textarea id="sessionId" class="metaText" rows="2">S-2026-015</textarea></div>
+<div class="field glass"><label>Session Title</label><textarea id="sessionTitle" class="metaText" rows="2">Loopology Session</textarea></div>
+<div class="field glass"><label>Date</label><input id="sessionDate" type="date"></div>
+<div class="field glass"><label>Status</label><input id="sessionStatus" value="READY" readonly></div>
+</section>
+<section class="timerbox glass">
+<div id="specialDateTime" class="specialDateTime">—</div>
+<div id="timer" class="timer">00:00:00</div>
+<div class="stats">
+<div class="stat"><span class="k">Started</span><span id="started" class="v">—</span></div>
+<div class="stat"><span class="k">Current</span><span id="current" class="v">—</span></div>
+<div class="stat"><span class="k">Active Time</span><span id="active" class="v">00:00:00</span></div>
+<div class="stat"><span class="k">Paused Time</span><span id="paused" class="v">00:00:00</span></div>
+<div class="stat"><span class="k">Wall Time</span><span id="wall" class="v">00:00:00</span></div>
+</div>
+<div class="controls"><button id="startBtn" title="Start session (S)">Start</button><button id="pauseBtn" disabled title="Pause (Space)">Pause</button><button id="resumeBtn" disabled title="Resume (Space)">Resume</button><button id="undoBtn" disabled title="Nothing to undo yet">Undo</button><button id="redoBtn" disabled title="Nothing to redo yet">Redo</button><button id="stopBtn" disabled title="Stop &amp; save">Stop</button></div><div id="undoHint" class="tiny"><span id="autosaveIndicator" class="autosaveDot" title="Autosave status"></span>LST-9: Undo/Redo stack (40 steps). Protects timer actions, New/Load, notes. Permanent deletions still need confirmation. Shortcuts: Space = pause/resume · Ctrl+Z = undo · Ctrl+Shift+Z = redo · Ctrl+Enter = add note · S = start (when idle).</div>
+<style>
+.timeEntry{margin-top:12px;padding:12px;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:rgba(0,0,0,.25)}
+.timeEntry h3{margin:0 0 8px;font-size:.95em;letter-spacing:.04em}
+.timeEntry .teRow{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.timeEntry .teField{display:flex;flex-direction:column;gap:4px;flex:1 1 200px;min-width:0}
+.timeEntry .teField label{font-size:.8em;opacity:.8}
+.timeEntry input{min-width:0;width:100%}
+.timeEntry button{flex:0 0 auto}
+.timeEntry #teDuration{font-weight:700;font-variant-numeric:tabular-nums;margin-top:8px}
+</style>
+<div class="timeEntry" id="timeEntry"><h3>Enter Start &amp; End Times</h3>
+<div class="teRow"><div class="teField"><label for="teStart">Start Time</label><input id="teStart" type="datetime-local" step="1"></div><div class="teField"><label for="teEnd">End Time</label><input id="teEnd" type="datetime-local" step="1"></div><button id="teApply" type="button">Apply Times</button></div>
+<div id="teDuration" aria-live="polite">Duration: —</div>
+<div class="tiny">For sessions the timer didn't catch. Enter the start and end you have, tap Apply Times, and the session's duration is recorded and saved to Session History. A start with no end keeps the timer running from that time.</div></div>
+</section>
+<section class="lower">
+<div class="notes glass"><h2>Session Notes Log</h2><textarea id="note" placeholder="Type a session note... (Ctrl+Enter to add)"></textarea><div class="noteBtns"><button id="addNote">Add Note</button><button id="clearNote">Clear Entry</button></div><div class="searchBar"><input id="noteSearch" type="search" placeholder="Filter notes..." aria-label="Filter session notes"></div><div id="log" class="log"></div><div class="tiny">Each note records Eastern clock time and active session elapsed time. Session data autosaves locally in this browser.</div>
+<div class="attachmentsSection"><div class="attachHead"><h3>Session Screenshots</h3><button id="importAttachment">Import Screenshot</button></div><input id="attachmentInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden><div id="attachments" class="attachmentsGrid"></div><div class="tiny">PNG, JPG, or WEBP. Each screenshot receives an Eastern clock timestamp and session elapsed time and stays attached to this session in this browser.</div></div>
+<div class="attachmentsSection audioSection"><div class="attachHead"><h3>Session Audio Files</h3><button id="importAudio">Link Audio File</button></div><input id="audioInput" type="file" accept="audio/*" hidden><div id="audioRefs" class="audioGrid"></div><div class="tiny">Long audio stays in its original folder or drive. The timer stores the file reference, Eastern timestamp, session elapsed time, location/path note, and evidence note. On desktop Chrome, the app can also store a file handle when the browser permits it. On phones, LST uses the mobile file picker; after closing or reloading the page, tap Relink File if the browser no longer grants access to that recording.</div></div></div>
+<aside class="history glass"><h2>Session History</h2><div class="searchBar"><input id="historySearch" type="search" placeholder="Filter history..." aria-label="Filter session history"></div><div id="history" class="hist"></div>
+<div id="historyEditor" class="editorPanel" style="display:none">
+<h3>Edit Saved Session</h3>
+<div class="editorGrid">
+<div class="editorField"><label>Session ID</label><textarea id="editId" rows="2"></textarea></div>
+<div class="editorField"><label>Status</label><select id="editStatus"><option>READY</option><option>ACTIVE</option><option>PAUSED</option><option>COMPLETED</option></select></div>
+<div class="editorField editorWide"><label>Session Title</label><textarea id="editTitle" rows="2"></textarea></div>
+<div class="editorField"><label>Session Date</label><input id="editDate" type="date"></div>
+<div class="editorField"><label>Start Timestamp</label><input id="editStart" type="datetime-local" step="1"></div>
+<div class="editorField"><label>End Timestamp</label><input id="editStop" type="datetime-local" step="1"></div>
+<div class="editorField"><label>Active Time (HH:MM:SS)</label><input id="editActive"></div>
+<div class="editorField"><label>Paused Time (HH:MM:SS)</label><input id="editPaused"></div>
+<div class="editorField"><label>Wall Time (HH:MM:SS)</label><input id="editWall"></div>
+</div>
+<h3 style="margin-top:14px">Timestamped Notes</h3>
+<div id="editNotes" class="editNotes"></div>
+<button id="addEditNote" class="miniBtn" style="width:100%;margin-top:9px">Add Note Row</button>
+<h3 style="margin-top:16px">Session Screenshots</h3>
+<div id="editAttachments" class="attachmentsGrid"></div>
+<div class="tiny">Load the saved session to add, caption, download, or remove screenshot files.</div>
+<h3 style="margin-top:16px">Session Audio Files</h3>
+<div id="editAudioRefs" class="audioGrid"></div>
+<div class="tiny">Audio files remain external. Edit the stored location/path and evidence note here; load the session to relink or play the file.</div>
+<div class="editorActions"><button id="saveEdit">Save Changes</button><button id="cancelEdit">Cancel</button></div>
+</div></aside>
+</section>
+<div class="footer"><button id="newBtn">New Session</button><button id="saveBtn">Save Session</button><button id="sessionExportBtn">Export Session</button><button id="sessionImportBtn">Import Session</button><button id="textBtn">Export Text</button><button id="pdfBtn">Export PDF</button></div><input id="sessionImportInput" type="file" accept=".lst,application/json,text/plain" hidden>
+</div>
+<div id="imageModal" role="dialog" aria-modal="true" aria-label="Screenshot preview"><div class="modalBar"><div id="modalTitle" class="modalTitle"></div><button id="closeModal">Close</button></div><img id="modalImage" alt="Session screenshot preview"></div>
+<script>
+(()=>{const localISODate=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;const CUR="loopology-current-v1";
+let _quotaWarned=false;
+function safeSet(k,v){try{localStorage.setItem(k,v);if(_quotaWarned&&k===CUR){_quotaWarned=false;const b=document.getElementById("storageWarn");if(b)b.hidden=true}return true}catch(e){const quota=e&&(e.name==="QuotaExceededError"||e.code===22||e.name==="NS_ERROR_DOM_QUOTA_REACHED");const b=document.getElementById("storageWarn");if(b){b.hidden=false;b.querySelector("span").textContent=quota?"Save failed: browser storage is full. Export this session now (Export Session / PDF) and delete old history.":"Save failed: browser storage is unavailable. Export this session now to keep your data."}if(!_quotaWarned)toast(quota?"Save failed — storage full. Export now.":"Save failed — storage unavailable. Export now.","err");_quotaWarned=true;console.warn(e);return false}}
+function toast(msg,kind){const host=document.getElementById("toasts");if(!host){console.log(msg);return}const t=document.createElement("div");t.className="toast"+(kind?" "+kind:"");t.setAttribute("role",kind==="err"?"alert":"status");const sp=document.createElement("span");sp.textContent=String(msg);const x=document.createElement("button");x.type="button";x.className="toastX";x.setAttribute("aria-label","Dismiss");x.textContent="×";x.onclick=()=>t.remove();t.append(sp,x);host.appendChild(t);setTimeout(()=>t.remove(),kind==="err"?9000:5000)}
+function announce(msg){const a=document.getElementById("srLive");if(a){a.textContent="";setTimeout(()=>a.textContent=msg,30)}}
+const $=x=>document.getElementById(x),HIST="loopology-history-v1",THEME_KEY="loopology-theme-v1";
+const THEMES=[
+  {id:"obsidian",label:"Obsidian",swatch:"#3a3a3a"},
+  {id:"midnight",label:"Midnight",swatch:"#3a5a9a"},
+  {id:"emerald",label:"Emerald",swatch:"#2a8a5a"},
+  {id:"amber",label:"Amber",swatch:"#c08020"},
+  {id:"violet",label:"Violet",swatch:"#7040b0"},
+  {id:"crimson",label:"Crimson",swatch:"#a02838"},
+  {id:"arctic",label:"Arctic",swatch:"#2888a0"},
+  {id:"graphite",label:"Graphite",swatch:"#585868"}
+];
+function applyTheme(id){const t=THEMES.find(x=>x.id===id)||THEMES[0];document.documentElement.setAttribute("data-theme",t.id);try{localStorage.setItem(THEME_KEY,t.id)}catch(e){}document.querySelectorAll(".themeSwatch").forEach(b=>{b.classList.toggle("active",b.dataset.theme===t.id);b.setAttribute("aria-pressed",b.dataset.theme===t.id?"true":"false")})}
+function initThemes(){const host=$("themeSwatches");if(!host)return;host.innerHTML="";THEMES.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="themeSwatch";b.dataset.theme=t.id;b.title=t.label;b.setAttribute("aria-label",t.label+" theme");b.setAttribute("aria-pressed","false");b.style.setProperty("--swatch",t.swatch);b.style.background=t.swatch;b.onclick=()=>applyTheme(t.id);host.appendChild(b)});let saved="obsidian";try{saved=localStorage.getItem(THEME_KEY)||"obsidian"}catch(e){}applyTheme(saved)}
+let s={running:false,paused:false,stopped:false,start:null,pauseStart:null,pausedMs:0,stop:null,notes:[],attachments:[],audioRefs:[]},editingIndex=null,loadedHistoryKey=null,editingNoteIndex=null;
+let attachmentURLs=[],audioObjectURLs=[],audioTransientFiles=new Map(),audioRelinkTarget=null,audioRelinkAutoPlay=false;
+let undoStack=[],redoStack=[],UNDO_MAX=40;
+const cloneState=v=>JSON.parse(JSON.stringify(v));
+function snapshotNow(label){return{label,s:cloneState(s),loadedHistoryKey,editingNoteIndex,meta:{id:$("sessionId").value,title:$("sessionTitle").value,date:$("sessionDate").value},status:$("sessionStatus").value,noteDraft:$("note").value,history:localStorage.getItem(HIST)}}
+function applySnapshot(u){if(u.history===null)localStorage.removeItem(HIST);else safeSet(HIST,u.history);s=cloneState(u.s);loadedHistoryKey=u.loadedHistoryKey||null;editingNoteIndex=u.editingNoteIndex??null;$("sessionId").value=u.meta.id;$("sessionTitle").value=u.meta.title;$("sessionDate").value=u.meta.date;$("note").value=u.noteDraft||"";status(u.status||"READY");if(loadedHistoryKey){let r=history().find(x=>sessionKey(x)===loadedHistoryKey);if(r)showHistoryNotice(r);else hideHistoryNotice()}else hideHistoryNotice();persist();renderHistory();render();renderAttachments();renderAudioRefs()}
+function updateUndoButton(message=""){let b=$("undoBtn"),r=$("redoBtn"),h=$("undoHint");if(b){b.disabled=!undoStack.length;b.title=undoStack.length?`Undo: ${undoStack[undoStack.length-1].label}`:"Nothing to undo yet"}if(r){r.disabled=!redoStack.length;r.title=redoStack.length?`Redo: ${redoStack[redoStack.length-1].label}`:"Nothing to redo yet"}if(message&&h){let base=h.querySelector?null:null;h.innerHTML=`<span id="autosaveIndicator" class="autosaveDot" title="Autosave status"></span>${message}`}}
+function pushUndo(label){undoStack.push(snapshotNow(label));if(undoStack.length>UNDO_MAX)undoStack.shift();redoStack=[];updateUndoButton()}
+function undoLast(){let u=undoStack.pop();if(!u)return;redoStack.push(snapshotNow(u.label));applySnapshot(u);updateUndoButton(`Undid: ${u.label}. ${undoStack.length?`Next: ${undoStack[undoStack.length-1].label}.`:"Undo empty."} ${redoStack.length?`Redo available.`:" "}`)}
+function redoLast(){let u=redoStack.pop();if(!u)return;undoStack.push(snapshotNow(u.label));applySnapshot(u);updateUndoButton(`Redid: ${u.label}. ${redoStack.length?`Next redo: ${redoStack[redoStack.length-1].label}.`:"Redo empty."}`)}
+const dur=ms=>{ms=Math.max(0,Math.floor(ms||0));let t=Math.floor(ms/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),z=t%60;return[h,m,z].map(v=>String(v).padStart(2,"0")).join(":")};
+const parseDur=v=>{let a=String(v||"").trim().split(":").map(Number);return a.length===3&&!a.some(Number.isNaN)?((a[0]*3600+a[1]*60+a[2])*1000):0};
+const ET="America/New_York";
+const clock=t=>t?new Intl.DateTimeFormat("en-US",{timeZone:ET,hour:"numeric",minute:"2-digit",second:"2-digit",timeZoneName:"short"}).format(new Date(t)):"—";
+const specialDateTime=(t=Date.now())=>new Intl.DateTimeFormat("en-US",{timeZone:ET,weekday:"long",month:"long",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit",second:"2-digit",timeZoneName:"short"}).format(new Date(t)).toUpperCase();
+const snap=(n=Date.now())=>{if(!s.start)return{active:0,paused:0,wall:0};let e=s.stop||n,w=e-s.start,p=s.pausedMs+(s.paused&&s.pauseStart?e-s.pauseStart:0);return{active:Math.max(0,w-p),paused:Math.max(0,p),wall:Math.max(0,w)}};
+const localDT=t=>{if(!t)return"";let d=new Date(t),p=n=>String(n).padStart(2,"0");return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`};
+const fromLocalDT=v=>v?new Date(v).getTime():null;
+const ASSET_DB="loopology-session-assets-v1",ASSET_STORE="attachments",AUDIO_STORE="audioHandles";
+let assetDbPromise=null;
+function assetDB(){if(assetDbPromise)return assetDbPromise;assetDbPromise=new Promise((resolve,reject)=>{if(!("indexedDB" in window)){reject(new Error("IndexedDB is not available in this browser."));return}let req=indexedDB.open(ASSET_DB,2);req.onupgradeneeded=()=>{let db=req.result;if(!db.objectStoreNames.contains(ASSET_STORE))db.createObjectStore(ASSET_STORE,{keyPath:"id"});if(!db.objectStoreNames.contains(AUDIO_STORE))db.createObjectStore(AUDIO_STORE,{keyPath:"id"})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error("Unable to open session asset storage."))});return assetDbPromise}
+async function putAsset(id,blob){let db=await assetDB();return new Promise((resolve,reject)=>{let tx=db.transaction(ASSET_STORE,"readwrite");tx.objectStore(ASSET_STORE).put({id,blob});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+async function getAsset(id){let db=await assetDB();return new Promise((resolve,reject)=>{let tx=db.transaction(ASSET_STORE,"readonly"),q=tx.objectStore(ASSET_STORE).get(id);q.onsuccess=()=>resolve(q.result&&q.result.blob?q.result.blob:null);q.onerror=()=>reject(q.error)})}
+async function deleteAsset(id){try{let db=await assetDB();await new Promise((resolve,reject)=>{let tx=db.transaction(ASSET_STORE,"readwrite");tx.objectStore(ASSET_STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}catch(e){console.warn(e)}}
+async function putAudioHandle(id,handle){if(!handle)return false;try{let db=await assetDB();await new Promise((resolve,reject)=>{let tx=db.transaction(AUDIO_STORE,"readwrite");tx.objectStore(AUDIO_STORE).put({id,handle});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)});return true}catch(e){console.warn("Audio handle could not be stored",e);return false}}
+async function getAudioHandle(id){try{let db=await assetDB();return await new Promise((resolve,reject)=>{let tx=db.transaction(AUDIO_STORE,"readonly"),q=tx.objectStore(AUDIO_STORE).get(id);q.onsuccess=()=>resolve(q.result&&q.result.handle?q.result.handle:null);q.onerror=()=>reject(q.error)})}catch(e){console.warn(e);return null}}
+async function deleteAudioHandle(id){try{let db=await assetDB();await new Promise((resolve,reject)=>{let tx=db.transaction(AUDIO_STORE,"readwrite");tx.objectStore(AUDIO_STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}catch(e){console.warn(e)}}
+function newAssetId(){return "shot-"+(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2))}
+function newAudioId(){return "audio-"+(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2))}
+function fmtBytes(n){n=Number(n)||0;if(n<1024)return n+" B";let u=["KB","MB","GB","TB"],i=-1;do{n/=1024;i++}while(n>=1024&&i<u.length-1);return n.toFixed(n>=100?0:n>=10?1:2)+" "+u[i]}
+async function readAudioDuration(file){return await new Promise(resolve=>{let u=URL.createObjectURL(file),a=document.createElement("audio"),finished=false,timer=null;let done=()=>{if(finished)return;finished=true;if(timer)clearTimeout(timer);let d=Number.isFinite(a.duration)?Math.round(a.duration*1000):0;URL.revokeObjectURL(u);resolve(d)};a.preload="metadata";a.onloadedmetadata=done;a.onerror=done;a.src=u;timer=setTimeout(done,3500)})}
+function clearAudioURLs(){audioObjectURLs.forEach(u=>URL.revokeObjectURL(u));audioObjectURLs=[]}
+async function requestHandleFile(handle){if(!handle)return null;try{if(handle.queryPermission){let p=await handle.queryPermission({mode:"read"});if(p!=="granted"&&handle.requestPermission)p=await handle.requestPermission({mode:"read"});if(p!=="granted")return null}return await handle.getFile()}catch(e){console.warn(e);return null}}
+function clearAssetURLs(){attachmentURLs.forEach(u=>URL.revokeObjectURL(u));attachmentURLs=[]}
+function openPreview(url,title){$("modalImage").src=url;$("modalTitle").textContent=title||"Session Screenshot";$("imageModal").classList.add("open")}
+function closePreview(){$("imageModal").classList.remove("open");$("modalImage").src=""}
+function downloadBlob(blob,name){let u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name||"session-screenshot.png";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},700)}
+async function importScreenshots(files){for(let file of [...files]){if(!/^image\/(png|jpeg|webp)$/i.test(file.type)){toast(`Unsupported image: ${file.name}`);continue}if(file.size>25*1024*1024){toast(`${file.name} is larger than 25 MB.`);continue}let now=Date.now(),id=newAssetId(),elapsed=dur(snap(now).active),meta={id,name:file.name||"Screenshot",type:file.type,size:file.size,addedAt:now,clock:clock(now),elapsed,caption:""};try{await putAsset(id,file)}catch(e){toast("Could not store this screenshot in the browser. "+(e&&e.message?e.message:""));continue}s.attachments=s.attachments||[];s.attachments.push(meta);s.notes=s.notes||[];s.notes.push({time:now,clock:meta.clock,elapsed,attachmentId:id,text:`Screenshot attached: ${meta.name}`});persist();renderNotes();await renderAttachments()}$("attachmentInput").value=""}
+async function removeAttachment(id){let meta=(s.attachments||[]).find(a=>a.id===id);if(!meta)return;if(!confirm(`Remove screenshot "${meta.name}" from this session?`))return;s.attachments=(s.attachments||[]).filter(a=>a.id!==id);s.notes=(s.notes||[]).filter(n=>n.attachmentId!==id);await deleteAsset(id);persist();renderNotes();await renderAttachments()}
+async function renderAttachments(){let w=$("attachments");if(!w)return;clearAssetURLs();w.innerHTML="";let list=s.attachments||[];if(!list.length){w.innerHTML='<div class="tiny">No screenshots attached yet.</div>';return}for(let meta of list){let card=document.createElement("div");card.className="attachmentCard";let blob=null;try{blob=await getAsset(meta.id)}catch(e){}if(blob){let url=URL.createObjectURL(blob);attachmentURLs.push(url);let img=document.createElement("img");img.className="attachmentThumb";img.src=url;img.alt=meta.caption||meta.name||"Session screenshot";img.onclick=()=>openPreview(url,meta.name);card.appendChild(img)}else{let er=document.createElement("div");er.className="assetError";er.textContent="Image data is not available in this browser.";card.appendChild(er)}let name=document.createElement("div");name.className="attachmentName";name.textContent=meta.name||"Screenshot";let m=document.createElement("div");m.className="attachmentMeta";m.textContent=`${meta.clock||clock(meta.addedAt)} | SESSION +${meta.elapsed||"00:00:00"}`;let cap=document.createElement("textarea");cap.className="attachmentCaption";cap.placeholder="Screenshot caption / evidence note";cap.value=meta.caption||"";cap.addEventListener("input",()=>{meta.caption=cap.value;persist()});let acts=document.createElement("div");acts.className="attachmentActions";let view=document.createElement("button");view.textContent="View";view.disabled=!blob;if(blob){let cardUrl=attachmentURLs[attachmentURLs.length-1];view.onclick=()=>openPreview(cardUrl,meta.name)}let dl=document.createElement("button");dl.textContent="Download";dl.disabled=!blob;if(blob)dl.onclick=()=>downloadBlob(blob,meta.name);let rm=document.createElement("button");rm.textContent="Remove";rm.className="removeAttachment";rm.onclick=()=>removeAttachment(meta.id);acts.append(view,dl,rm);card.append(name,m,cap,acts);w.appendChild(card)}}
+async function renderEditAttachments(list){let w=$("editAttachments");if(!w)return;w.innerHTML="";if(!list||!list.length){w.innerHTML='<div class="tiny">No screenshots attached to this saved session.</div>';return}for(let meta of list){let card=document.createElement("div");card.className="attachmentCard";let name=document.createElement("div");name.className="attachmentName";name.textContent=meta.name||"Screenshot";let m=document.createElement("div");m.className="attachmentMeta";m.textContent=`${meta.clock||clock(meta.addedAt)} | SESSION +${meta.elapsed||"00:00:00"}`;let cap=document.createElement("div");cap.className="small";cap.style.marginTop="6px";cap.textContent=meta.caption||"No caption";card.append(name,m,cap);w.appendChild(card)}}
+async function addAudioReference(file,handle=null,existingId=null,autoPlay=false){if(!file)return;let now=Date.now(),id=existingId||newAudioId(),durationMs=await readAudioDuration(file),stored=await putAudioHandle(id,handle);audioTransientFiles.set(id,file);if(existingId){let meta=(s.audioRefs||[]).find(a=>a.id===existingId);if(!meta)return;meta.name=file.name||meta.name;meta.type=file.type||meta.type;meta.size=file.size;meta.lastModified=file.lastModified;meta.durationMs=durationMs;meta.handleStored=stored||meta.handleStored;meta.relinkedAt=now}else{let elapsed=dur(snap(now).active),meta={id,name:file.name||"Audio File",type:file.type||"audio",size:file.size,lastModified:file.lastModified,addedAt:now,clock:clock(now),elapsed,durationMs,location:"",note:"",handleStored:stored};s.audioRefs=s.audioRefs||[];s.audioRefs.push(meta);s.notes=s.notes||[];s.notes.push({time:now,clock:meta.clock,elapsed,audioRefId:id,text:`Audio file referenced: ${meta.name}`})}persist();renderNotes();await renderAudioRefs();if(autoPlay){let meta=(s.audioRefs||[]).find(a=>a.id===id),card=document.querySelector(`[data-audio-id="${CSS.escape(id)}"]`);if(meta&&card)await playAudioReference(meta,card)}}
+function isMobileAudioPicker(){let ua=navigator.userAgent||"";return /Android|iPhone|iPad|iPod/i.test(ua)||(navigator.maxTouchPoints>1&&window.matchMedia&&window.matchMedia("(pointer: coarse)").matches)}
+function chooseAudioWithInput(existingId=null,autoPlay=false){audioRelinkTarget=existingId;audioRelinkAutoPlay=autoPlay;let input=$("audioInput");input.value="";input.click()}
+async function chooseAudioFile(existingId=null,autoPlay=false){if(isMobileAudioPicker()||!window.isSecureContext||!window.showOpenFilePicker){chooseAudioWithInput(existingId,autoPlay);return}try{let [handle]=await window.showOpenFilePicker({multiple:false,types:[{description:"Audio files",accept:{"audio/*":[".wav",".mp3",".m4a",".aac",".flac",".aif",".aiff",".ogg"]}}]});let file=await handle.getFile();await addAudioReference(file,handle,existingId,autoPlay);return}catch(e){if(e&&e.name==="AbortError")return;console.warn(e);toast("Chrome could not use the persistent file picker. Tap Link Audio File again and LST will use the standard picker.")}}
+async function getAudioFile(meta){if(audioTransientFiles.has(meta.id))return audioTransientFiles.get(meta.id);let handle=await getAudioHandle(meta.id);let file=await requestHandleFile(handle);if(file){audioTransientFiles.set(meta.id,file);return file}return null}
+async function playAudioReference(meta,card){let host=card.querySelector(".audioPlayerHost");if(!host)return;let file=await getAudioFile(meta);if(!file){host.innerHTML='<div class="audioUnavailable">The external recording is not currently available. Use Relink to reconnect the original file without importing it into the timer.</div>';return}let u=URL.createObjectURL(file);audioObjectURLs.push(u);host.innerHTML="";let a=document.createElement("audio");a.controls=true;a.preload="metadata";a.playsInline=true;a.src=u;host.appendChild(a);try{await a.play()}catch(e){}}
+async function removeAudioReference(id){let meta=(s.audioRefs||[]).find(a=>a.id===id);if(!meta)return;if(!confirm(`Remove audio reference "${meta.name}" from this session? The original audio file will not be deleted.`))return;s.audioRefs=(s.audioRefs||[]).filter(a=>a.id!==id);s.notes=(s.notes||[]).filter(n=>n.audioRefId!==id);audioTransientFiles.delete(id);await deleteAudioHandle(id);persist();renderNotes();await renderAudioRefs()}
+async function copyAudioLocation(meta){let v=(meta.location||meta.name||"").trim();if(!v)return;try{await navigator.clipboard.writeText(v)}catch(e){toast("Clipboard unavailable. Location: "+v)}}
+async function renderAudioRefs(){let w=$("audioRefs");if(!w)return;clearAudioURLs();w.innerHTML="";let list=s.audioRefs||[];if(!list.length){w.innerHTML='<div class="tiny">No audio files linked yet.</div>';return}for(let meta of list){let card=document.createElement("div");card.className="audioCard";card.dataset.audioId=meta.id;let top=document.createElement("div");top.className="audioTop";let info=document.createElement("div");let name=document.createElement("div");name.className="audioName";name.textContent=meta.name||"Audio File";let m=document.createElement("div");m.className="audioMeta";let parts=[`${meta.clock||clock(meta.addedAt)} | SESSION +${meta.elapsed||"00:00:00"}`,fmtBytes(meta.size)];if(meta.durationMs)parts.push(`Duration ${dur(meta.durationMs)}`);m.textContent=parts.join(" · ");info.append(name,m);let badge=document.createElement("div");badge.className="audioBadge";badge.textContent="AUDIO REF";top.append(info,badge);let fields=document.createElement("div");fields.className="audioFields";let locWrap=document.createElement("div"),locLab=document.createElement("label");locLab.textContent="File Location / Archive Path";let loc=document.createElement("input");loc.className="audioLocation";loc.placeholder="Example: D:\Loopology Audio\Session 015\take-01.wav or a cloud URL";loc.value=meta.location||"";loc.addEventListener("input",()=>{meta.location=loc.value;persist()});locWrap.append(locLab,loc);let noteWrap=document.createElement("div"),noteLab=document.createElement("label");noteLab.textContent="Audio Evidence Note";let note=document.createElement("textarea");note.className="audioNote";note.placeholder="What this recording contains / why it belongs to this session";note.value=meta.note||"";note.addEventListener("input",()=>{meta.note=note.value;persist()});noteWrap.append(noteLab,note);fields.append(locWrap,noteWrap);let acts=document.createElement("div");acts.className="audioActions";let play=document.createElement("button");play.textContent="Load / Play";play.onclick=()=>playAudioReference(meta,card);let relink=document.createElement("button");relink.textContent="Relink File";relink.onclick=()=>chooseAudioFile(meta.id,false);let copy=document.createElement("button");copy.textContent="Copy Path";copy.onclick=()=>copyAudioLocation(meta);let rm=document.createElement("button");rm.textContent="Remove Reference";rm.onclick=()=>removeAudioReference(meta.id);acts.append(play,relink,copy,rm);let host=document.createElement("div");host.className="audioPlayerHost";card.append(top,fields,acts,host);w.appendChild(card)}}
+function renderEditAudioRefs(list){let w=$("editAudioRefs");if(!w)return;w.innerHTML="";if(!list||!list.length){w.innerHTML='<div class="tiny">No audio file references in this saved session.</div>';return}for(let meta of list){let card=document.createElement("div");card.className="editAudioCard";card.dataset.audioId=meta.id;let name=document.createElement("div");name.className="audioName";name.textContent=meta.name||"Audio File";let m=document.createElement("div");m.className="audioMeta";m.textContent=`${meta.clock||clock(meta.addedAt)} | SESSION +${meta.elapsed||"00:00:00"} · ${fmtBytes(meta.size)}${meta.durationMs?" · "+dur(meta.durationMs):""}`;let ll=document.createElement("label");ll.textContent="File Location / Archive Path";let loc=document.createElement("input");loc.className="editAudioLocation";loc.value=meta.location||"";let nl=document.createElement("label");nl.textContent="Audio Evidence Note";nl.style.marginTop="8px";let note=document.createElement("textarea");note.className="editAudioNote";note.value=meta.note||"";let actions=document.createElement("div");actions.className="editAudioActions";let del=document.createElement("button");del.textContent="Remove Reference";del.onclick=()=>card.remove();actions.appendChild(del);card.append(name,m,ll,loc,nl,note,actions);w.appendChild(card)}}
+function collectEditAudioRefs(original){let map=new Map((original||[]).map(x=>[x.id,x]));return[...document.querySelectorAll("#editAudioRefs .editAudioCard")].map(card=>{let old=map.get(card.dataset.audioId)||{id:card.dataset.audioId};return{...old,location:card.querySelector(".editAudioLocation").value.trim(),note:card.querySelector(".editAudioNote").value}})}
+function status(x){$("sessionStatus").value=x;let c=$("chip");c.textContent=x;c.classList.remove("running","paused","completed");if(x==="ACTIVE")c.classList.add("running");else if(x==="PAUSED")c.classList.add("paused");else if(x==="COMPLETED")c.classList.add("completed")}
+function sessionKey(r){return r?`${r.id||""}::${r.start||""}`:""}
+function flashAutosave(){let d=$("autosaveIndicator");if(!d)return;d.classList.add("saved");clearTimeout(flashAutosave._t);flashAutosave._t=setTimeout(()=>d.classList.remove("saved"),1200)}
+function hideHistoryNotice(){loadedHistoryKey=null;$("historyLoadNotice").hidden=true;$("historyLoadNoticeText").textContent="This is a saved archive record. Deleting it removes the saved session and stored screenshot copies from this browser. External audio files are not deleted."}
+function showHistoryNotice(r){if(!r){hideHistoryNotice();return}loadedHistoryKey=sessionKey(r);$("historyLoadNotice").hidden=false;$("historyLoadNoticeText").textContent=`${r.id||"Saved session"} is loaded from Session History. Delete This Session permanently removes this saved record and its stored screenshot copies from this browser. External audio files are not deleted.`}
+function render(){let t=snap();$("specialDateTime").textContent=specialDateTime();let tm=$("timer");tm.textContent=dur(t.active);tm.classList.toggle("running",s.running&&!s.paused&&!s.stopped);$("active").textContent=dur(t.active);$("paused").textContent=dur(t.paused);$("wall").textContent=dur(t.wall);$("started").textContent=clock(s.start);$("current").textContent=clock(Date.now());$("startBtn").disabled=s.running||s.stopped;$("pauseBtn").disabled=!s.running||s.paused||s.stopped;$("resumeBtn").disabled=!s.running||!s.paused||s.stopped;$("stopBtn").disabled=!s.running||s.stopped;updateUndoButton();renderNotes()}
+function syncNoteLogChange(){persist();let r=record();if(r.start){let h=history(),i=h.findIndex(x=>x.id===r.id&&x.start===r.start);if(i>=0){h[i]={...h[i],...r,savedAt:Date.now()};writeHistory(h);if(loadedHistoryKey===sessionKey(h[i]))showHistoryNotice(h[i]);renderHistory()}}}
+function beginNoteEdit(i){if(!s.notes[i])return;editingNoteIndex=i;renderNotes();requestAnimationFrame(()=>{let box=document.querySelector('.noteEditBox');if(box){box.focus();box.setSelectionRange(box.value.length,box.value.length)}})}
+function cancelNoteEdit(){editingNoteIndex=null;renderNotes()}
+function saveNoteEdit(i,value){if(!s.notes[i])return;let text=String(value||'').trim();if(!text){toast('A session note cannot be empty. Delete the record instead if you no longer need it.');return}pushUndo("Edit Note");s.notes[i].text=text;editingNoteIndex=null;syncNoteLogChange();renderNotes()}
+function deleteSessionNote(i){let n=s.notes[i];if(!n)return;let linked=n.attachmentId?' The screenshot itself will remain in Session Screenshots.':n.audioRefId?' The audio reference itself will remain in Session Audio Files.':'';if(!confirm(`Delete this Session Notes Log record?\n\n${n.text||'Untitled note'}\n\nYou can restore this note with the Undo button.${linked}`))return;pushUndo("Delete Note");s.notes.splice(i,1);if(editingNoteIndex===i)editingNoteIndex=null;else if(editingNoteIndex!==null&&editingNoteIndex>i)editingNoteIndex--;syncNoteLogChange();renderNotes()}
+function renderNotes(){let l=$("log");if(editingNoteIndex!==null&&l.querySelector('.noteInlineEditor'))return;l.innerHTML="";let q=($("noteSearch")?.value||"").trim().toLowerCase();let items=s.notes.map((n,i)=>({n,i})).reverse();if(q)items=items.filter(({n})=>((n.text||"")+(n.clock||"")+(n.elapsed||"")).toLowerCase().includes(q));if(!s.notes.length){l.innerHTML='<div class="tiny">No session notes yet.</div>';return}if(!items.length){l.innerHTML='<div class="tiny">No notes match this filter.</div>';return}items.forEach(({n,i})=>{let e=document.createElement("div");e.className="entry";let top=document.createElement("div");top.className="entryTop";let st=document.createElement("div");st.className="stamp";st.textContent=`[${n.clock} | Session +${n.elapsed}]`;let acts=document.createElement("div");acts.className="noteEntryActions";let edit=document.createElement("button");edit.textContent="Edit";edit.onclick=()=>beginNoteEdit(i);let del=document.createElement("button");del.textContent="Delete";del.className="noteDeleteBtn";del.onclick=()=>deleteSessionNote(i);acts.append(edit,del);top.append(st,acts);e.appendChild(top);if(i===editingNoteIndex){let wrap=document.createElement("div");wrap.className="noteInlineEditor";let box=document.createElement("textarea");box.className="noteEditBox";box.value=n.text||"";let ea=document.createElement("div");ea.className="noteEditActions";let save=document.createElement("button");save.textContent="Save Note";save.onclick=()=>saveNoteEdit(i,box.value);let cancel=document.createElement("button");cancel.textContent="Cancel";cancel.onclick=cancelNoteEdit;ea.append(save,cancel);wrap.append(box,ea);e.appendChild(wrap)}else{let tx=document.createElement("div");tx.className="entryText";tx.textContent=n.text;e.appendChild(tx)}l.appendChild(e)})}
+function persist(){safeSet(CUR,JSON.stringify({s,loadedHistoryKey,meta:{id:$("sessionId").value,title:$("sessionTitle").value,date:$("sessionDate").value}}));flashAutosave()}
+function restore(){try{let p=JSON.parse(localStorage.getItem(CUR)||"null");if(!p)return;if(p.s)s={...p.s,attachments:p.s.attachments||[],audioRefs:p.s.audioRefs||[]};loadedHistoryKey=p.loadedHistoryKey||null;if(p.meta){$("sessionId").value=p.meta.id||$("sessionId").value;$("sessionTitle").value=p.meta.title||$("sessionTitle").value;$("sessionDate").value=p.meta.date||$("sessionDate").value}if(s.stopped)status("COMPLETED");else if(s.running&&s.paused)status("PAUSED");else if(s.running)status("ACTIVE");if(loadedHistoryKey){let r=history().find(x=>sessionKey(x)===loadedHistoryKey);if(r)showHistoryNotice(r);else hideHistoryNotice()}}catch(e){}}
+function start(){pushUndo("Start Session");hideHistoryNotice();s={running:true,paused:false,stopped:false,start:Date.now(),pauseStart:null,pausedMs:0,stop:null,notes:[],attachments:[],audioRefs:[]};status("ACTIVE");persist();render();renderAttachments();renderAudioRefs()}
+function pause(){if(!s.running||s.paused)return;pushUndo("Pause");s.paused=true;s.pauseStart=Date.now();status("PAUSED");persist();render()}
+function resume(){if(!s.running||!s.paused)return;pushUndo("Resume");let n=Date.now();s.pausedMs+=n-s.pauseStart;s.pauseStart=null;s.paused=false;status("ACTIVE");persist();render()}
+function record(){let t=snap();return{id:$("sessionId").value||"UNTITLED",title:$("sessionTitle").value||"Loopology Session",date:$("sessionDate").value,status:$("sessionStatus").value,start:s.start,stop:s.stop,activeMs:t.active,pausedMs:t.paused,wallMs:t.wall,notes:s.notes||[],attachments:s.attachments||[],audioRefs:s.audioRefs||[],savedAt:Date.now()}}
+function history(){try{return JSON.parse(localStorage.getItem(HIST)||"[]")}catch(e){return[]}}
+function writeHistory(h){safeSet(HIST,JSON.stringify(h.slice(0,100)))}
+function saveHistory(){let r=record();if(!r.start)return;let h=history().filter(x=>!(x.id===r.id&&x.start===r.start));h.unshift(r);writeHistory(h);renderHistory()}
+function stop(){if(!s.running)return;pushUndo("Stop Session");let n=Date.now();if(s.paused&&s.pauseStart){s.pausedMs+=n-s.pauseStart;s.pauseStart=null;s.paused=false}s.stop=n;s.stopped=true;s.running=false;status("COMPLETED");persist();saveHistory();render()}
+function add(){let tx=$("note").value.trim();if(!tx)return;pushUndo("Add Note");let n=Date.now();s.notes.push({time:n,clock:clock(n),elapsed:dur(snap(n).active),text:tx});$("note").value="";syncNoteLogChange();renderNotes()}
+function duplicateHistorySession(i){let h=history(),r=h[i];if(!r)return;pushUndo("Duplicate Session");let copy={...cloneState(r),id:nextId(),title:(r.title||"Session")+" (copy)",savedAt:Date.now()};h.unshift(copy);writeHistory(h);renderHistory()}
+function renderHistory(){let w=$("history"),h=history(),q=($("historySearch")?.value||"").trim().toLowerCase();w.innerHTML="";if(!h.length){w.innerHTML='<div class="tiny">No saved sessions yet.</div>';return}let filtered=h.map((r,i)=>({r,i}));if(q)filtered=filtered.filter(({r})=>((r.id||"")+(r.title||"")+(r.date||"")+(r.status||"")).toLowerCase().includes(q));if(!filtered.length){w.innerHTML='<div class="tiny">No sessions match this filter.</div>';return}filtered.forEach(({r,i})=>{let d=document.createElement("div");d.className="histItem";let strong=document.createElement("strong");strong.textContent=r.title;let sm=document.createElement("div");sm.className="small";sm.innerHTML=`${r.id}<br>${r.date||"No date"} · ${r.status||""}<br>Active ${dur(r.activeMs)} · Wall ${dur(r.wallMs)} · Notes ${(r.notes||[]).length} · Screenshots ${(r.attachments||[]).length} · Audio ${(r.audioRefs||[]).length}`;let acts=document.createElement("div");acts.className="historyItemActions";let loadBtn=document.createElement("button");loadBtn.textContent="Load";loadBtn.onclick=()=>load(i);let editBtn=document.createElement("button");editBtn.textContent="Edit";editBtn.onclick=()=>openEditor(i);let dupBtn=document.createElement("button");dupBtn.textContent="Duplicate";dupBtn.onclick=()=>duplicateHistorySession(i);let delBtn=document.createElement("button");delBtn.textContent="Delete";delBtn.className="deleteBtn";delBtn.onclick=()=>deleteHistorySession(i);acts.append(loadBtn,editBtn,dupBtn,delBtn);d.append(strong,sm,acts);w.appendChild(d)})}
+async function deleteHistorySession(i){let h=history(),r=h[i];if(!r)return;let ok=confirm(`Delete ${r.id||"this session"} from Session History?\n\nThis permanently removes the saved session record and stored screenshot copies from this browser. External audio files are NOT deleted.`);if(!ok)return;for(let a of (r.attachments||[]))await deleteAsset(a.id);for(let a of (r.audioRefs||[]))await deleteAudioHandle(a.id);let wasLoaded=loadedHistoryKey===sessionKey(r);h.splice(i,1);writeHistory(h);if(editingIndex===i)closeEditor();else if(editingIndex!==null&&editingIndex>i)editingIndex--;renderHistory();if(wasLoaded){hideHistoryNotice();fresh()}else persist()}
+async function deleteLoadedHistorySession(){if(!loadedHistoryKey)return;let h=history(),i=h.findIndex(r=>sessionKey(r)===loadedHistoryKey);if(i<0){hideHistoryNotice();persist();return}await deleteHistorySession(i)}
+function load(i){let r=history()[i];if(!r)return;pushUndo("Load Session");$("sessionId").value=r.id;$("sessionTitle").value=r.title;$("sessionDate").value=r.date||"";s={running:false,paused:false,stopped:true,start:r.start,pauseStart:null,pausedMs:r.pausedMs||0,stop:r.stop||(r.start+(r.wallMs||0)),notes:r.notes||[],attachments:r.attachments||[],audioRefs:r.audioRefs||[]};status(r.status||"COMPLETED");showHistoryNotice(r);persist();render();renderAttachments();renderAudioRefs();$("historyLoadNotice").scrollIntoView({behavior:"smooth",block:"nearest"})}
+function openEditor(i){let r=history()[i];if(!r)return;editingIndex=i;$("editId").value=r.id||"";$("editTitle").value=r.title||"";$("editDate").value=r.date||"";$("editStatus").value=r.status||"COMPLETED";$("editStart").value=localDT(r.start);$("editStop").value=localDT(r.stop);$("editActive").value=dur(r.activeMs);$("editPaused").value=dur(r.pausedMs);$("editWall").value=dur(r.wallMs);renderEditNotes(r.notes||[]);renderEditAttachments(r.attachments||[]);renderEditAudioRefs(r.audioRefs||[]);$("historyEditor").style.display="block";$("historyEditor").scrollIntoView({behavior:"smooth",block:"nearest"})}
+function closeEditor(){editingIndex=null;$("historyEditor").style.display="none";$("editNotes").innerHTML="";$("editAttachments").innerHTML=""}
+function renderEditNotes(notes){let w=$("editNotes");w.innerHTML="";notes.forEach(n=>addEditNoteRow(n));if(!notes.length)w.innerHTML='<div class="tiny" id="noEditNotes">No timestamped notes in this saved session.</div>'}
+function addEditNoteRow(n={clock:"",elapsed:"00:00:00",text:""}){let no=$("noEditNotes");if(no)no.remove();let w=$("editNotes"),row=document.createElement("div");row.className="editNote";let top=document.createElement("div");top.className="editNoteTop";let c=document.createElement("div");c.innerHTML='<label>Clock Time</label>';let ci=document.createElement("input");ci.className="editClock";ci.value=n.clock||"";c.appendChild(ci);let e=document.createElement("div");e.innerHTML='<label>Elapsed</label>';let ei=document.createElement("input");ei.className="editElapsed";ei.value=n.elapsed||"00:00:00";e.appendChild(ei);let del=document.createElement("button");del.className="miniBtn";del.textContent="Delete";del.onclick=()=>row.remove();let tx=document.createElement("textarea");tx.className="editText";tx.value=n.text||"";top.append(c,e,del);row.append(top,tx);w.appendChild(row)}
+function collectEditNotes(){return[...document.querySelectorAll("#editNotes .editNote")].map(row=>({time:null,clock:row.querySelector(".editClock").value.trim(),elapsed:row.querySelector(".editElapsed").value.trim()||"00:00:00",text:row.querySelector(".editText").value}))}
+async function saveEditedSession(){if(editingIndex===null)return;let h=history(),old=h[editingIndex];if(!old)return;let start=fromLocalDT($("editStart").value),stop=fromLocalDT($("editStop").value),activeMs=parseDur($("editActive").value),pausedMs=parseDur($("editPaused").value),wallMs=parseDur($("editWall").value);if(start&&stop&&wallMs===0)wallMs=Math.max(0,stop-start);let updatedAudio=collectEditAudioRefs(old.audioRefs||[]),kept=new Set(updatedAudio.map(x=>x.id));for(let a of (old.audioRefs||[])){if(!kept.has(a.id))await deleteAudioHandle(a.id)}let u={...old,id:$("editId").value.trim()||"UNTITLED",title:$("editTitle").value.trim()||"Loopology Session",date:$("editDate").value,status:$("editStatus").value,start,stop,activeMs,pausedMs,wallMs,notes:collectEditNotes(),attachments:old.attachments||[],audioRefs:updatedAudio,savedAt:Date.now()};h[editingIndex]=u;writeHistory(h);if(loadedHistoryKey===sessionKey(old)){showHistoryNotice(u)}if(s.start===old.start||($("sessionId").value===old.id&&!s.running)){$("sessionId").value=u.id;$("sessionTitle").value=u.title;$("sessionDate").value=u.date||"";s={running:false,paused:false,stopped:true,start:u.start,pauseStart:null,pausedMs:u.pausedMs||0,stop:u.stop,notes:u.notes||[],attachments:u.attachments||[],audioRefs:u.audioRefs||[]};status(u.status||"COMPLETED");persist();render();renderAttachments();renderAudioRefs()}closeEditor();renderHistory()}
+function nextId(){let y=new Date().getFullYear(),nums=history().map(x=>String(x.id||"").match(/^S-\d{4}-(\d+)$/)).filter(Boolean).map(m=>+m[1]),n=(nums.length?Math.max(...nums):14)+1;return`S-${y}-${String(n).padStart(3,"0")}`}
+function fresh(){let hasData=s.start||(s.notes&&s.notes.length)||(s.attachments&&s.attachments.length)||(s.audioRefs&&s.audioRefs.length);if(hasData&&!confirm("Start a new session? Current session data will be archived if it was running, or discarded from the workspace if it was not saved.\n\nUse Undo to restore if needed."))return;pushUndo("New Session");if(s.running)saveHistory();hideHistoryNotice();s={running:false,paused:false,stopped:false,start:null,pauseStart:null,pausedMs:0,stop:null,notes:[],attachments:[],audioRefs:[]};$("sessionId").value=nextId();$("sessionTitle").value="Loopology Session";$("sessionDate").value=localISODate();$("note").value="";status("READY");persist();render();renderAttachments();renderAudioRefs()}
+function exportText(){let r=record(),lines=["LOOPOLOGY SESSION TIMER","gdotbennettmusic","",`Session ID: ${r.id}`,`Session Title: ${r.title}`,`Date: ${r.date}`,`Status: ${r.status}`,`Started: ${r.start?specialDateTime(r.start):"—"}`,`Ended: ${r.stop?specialDateTime(r.stop):"—"}`,`Active Time: ${dur(r.activeMs)}`,`Paused Time: ${dur(r.pausedMs)}`,`Wall Time: ${dur(r.wallMs)}`,"","SESSION NOTES LOG","-----------------",...(r.notes||[]).map(n=>`[${n.clock} | Session +${n.elapsed}] ${n.text}`),"","SESSION SCREENSHOTS","-------------------",...((r.attachments||[]).length?(r.attachments||[]).map((a,i)=>`${i+1}. [${a.clock||clock(a.addedAt)} | Session +${a.elapsed||"00:00:00"}] ${a.name}${a.caption?" — "+a.caption:""}`):["No screenshots attached."]),"","SESSION AUDIO FILES","-------------------",...((r.audioRefs||[]).length?(r.audioRefs||[]).map((a,i)=>`${i+1}. [${a.clock||clock(a.addedAt)} | Session +${a.elapsed||"00:00:00"}] ${a.name} | ${fmtBytes(a.size)}${a.durationMs?" | Duration "+dur(a.durationMs):""}${a.location?" | Location: "+a.location:""}${a.note?" | Note: "+a.note:""}`):["No audio files linked."])];let blob=new Blob([lines.join("\n")],{type:"text/plain"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=(r.id+"_"+r.title).replace(/[^a-z0-9-_]+/gi,"_")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}
+
+async function blobToDataURL(blob){return await new Promise((resolve,reject)=>{let r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error("Unable to read screenshot data."));r.readAsDataURL(blob)})}
+function dataURLToBlob(data){let parts=String(data||"").split(","),head=parts[0]||"",body=parts[1]||"",m=(head.match(/^data:([^;]+)/)||[])[1]||"application/octet-stream",bin=atob(body),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new Blob([bytes],{type:m})}
+async function buildPortableSession(){let r=record(),screenshots=[];for(let meta of (r.attachments||[])){let blob=null;try{blob=await getAsset(meta.id)}catch(e){console.warn(e)}screenshots.push({meta:{...meta},data:blob?await blobToDataURL(blob):null})}let cleanAudio=(r.audioRefs||[]).map(a=>({...a,handleStored:false}));let session={...r,audioRefs:cleanAudio};return{format:"LOOPOLOGY_SESSION",extension:".lst",version:1,createdBy:"Loopology Session Timer",exportedAt:new Date().toISOString(),audioPolicy:"external-reference-only",session,screenshots}}
+async function exportPortableSession(){let b=$("sessionExportBtn"),old=b.textContent;b.disabled=true;b.textContent="Building .LST";try{let pkg=await buildPortableSession(),json=JSON.stringify(pkg,null,2),blob=new Blob([json],{type:"application/vnd.loopology.session+json"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=`${safeName(pkg.session.id)}_${safeName(pkg.session.title)}.lst`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},1000)}catch(e){toast("Session export failed. "+(e&&e.message?e.message:""))}finally{b.disabled=false;b.textContent=old}}
+function validatePortableSession(pkg){if(!pkg||pkg.format!=="LOOPOLOGY_SESSION"||!pkg.session)throw new Error("This is not a valid Loopology .lst session file.");if(Number(pkg.version||0)>1)throw new Error("This .lst file was created by a newer unsupported session format.");return pkg}
+async function importPortableSessionFile(file){if(!file)return;let text=await file.text(),pkg;try{pkg=validatePortableSession(JSON.parse(text))}catch(e){toast(e&&e.message?e.message:"Unable to read this .lst session file.");return}let src=pkg.session||{},assetMap=new Map(),audioMap=new Map(),newAttachments=[];for(let item of (pkg.screenshots||[])){let oldMeta=item&&item.meta?item.meta:{},newId=newAssetId(),meta={...oldMeta,id:newId};assetMap.set(oldMeta.id,newId);if(item&&item.data){try{await putAsset(newId,dataURLToBlob(item.data))}catch(e){console.warn(e);toast(`The session imported, but screenshot "${oldMeta.name||"Screenshot"}" could not be stored on this device.`)}}newAttachments.push(meta)}if(!newAttachments.length&&(src.attachments||[]).length){for(let oldMeta of src.attachments){let newId=newAssetId();assetMap.set(oldMeta.id,newId);newAttachments.push({...oldMeta,id:newId})}}
+let newAudio=(src.audioRefs||[]).map(a=>{let id=newAudioId();audioMap.set(a.id,id);return{...a,id,handleStored:false}});let newNotes=(src.notes||[]).map(n=>{let x={...n};if(x.attachmentId&&assetMap.has(x.attachmentId))x.attachmentId=assetMap.get(x.attachmentId);if(x.audioRefId&&audioMap.has(x.audioRefId))x.audioRefId=audioMap.get(x.audioRefId);return x});let imported={...src,notes:newNotes,attachments:newAttachments,audioRefs:newAudio,savedAt:Date.now(),importedAt:Date.now()};let h=history(),match=h.findIndex(x=>x.id===imported.id&&x.start===imported.start);if(match>=0){if(!confirm(`Session ${imported.id} already exists in this browser. Replace it with the imported copy?`))return;let old=h[match];for(let a of (old.attachments||[]))await deleteAsset(a.id);for(let a of (old.audioRefs||[]))await deleteAudioHandle(a.id);h.splice(match,1)}h.unshift(imported);writeHistory(h);$("sessionId").value=imported.id||"UNTITLED";$("sessionTitle").value=imported.title||"Loopology Session";$("sessionDate").value=imported.date||"";s={running:false,paused:false,stopped:true,start:imported.start||null,pauseStart:null,pausedMs:imported.pausedMs||0,stop:imported.stop||(imported.start&&imported.wallMs?imported.start+imported.wallMs:null),notes:imported.notes||[],attachments:imported.attachments||[],audioRefs:imported.audioRefs||[]};status(imported.status||"COMPLETED");showHistoryNotice(imported);persist();renderHistory();render();await renderAttachments();await renderAudioRefs();toast(`Imported ${imported.id||"session"}. Screenshots traveled with the .lst file. External audio references were preserved; use Relink File for playback on this device.`)}
+function safeName(v){return String(v||"session").replace(/[^a-z0-9_-]+/gi,"_").replace(/^_+|_+$/g,"")||"session"}
+function pdfAscii(v){return String(v??"").replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,"-").replace(/\u2022/g,"*").replace(/\u2122/g,"").replace(/[^\x20-\x7E\n\r\t]/g,"?")}
+function pdfEsc(v){return pdfAscii(v).replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")}
+function wrapText(text,maxChars=86){let out=[];for(let para of pdfAscii(text).replace(/\r/g,"").split("\n")){if(!para){out.push("");continue}let line="";for(let word of para.split(/\s+/)){if(!line){line=word;continue}if((line+" "+word).length<=maxChars)line+=" "+word;else{out.push(line);line=word}}if(line)out.push(line)}return out}
+function pdfText(c,x,y,size,str,bold=false,gray=0){c.push(`q ${gray} g BT /${bold?"F2":"F1"} ${size} Tf 1 0 0 1 ${x} ${y} Tm (${pdfEsc(str)}) Tj ET Q`)}
+function pdfLine(c,x1,y1,x2,y2,gray=.78,width=.6){c.push(`q ${gray} G ${width} w ${x1} ${y1} m ${x2} ${y2} l S Q`)}
+function pdfBox(c,x,y,w,h){c.push(`q .88 g ${x+6} ${y-6} ${w} ${h} re f Q`);c.push(`q 1 g ${x} ${y} ${w} ${h} re f Q`);c.push(`q .72 G .8 w ${x} ${y} ${w} ${h} re S Q`)}
+function asciiBytes(str){return new TextEncoder().encode(str)}
+function concatBytes(parts){let size=parts.reduce((n,p)=>n+p.length,0),out=new Uint8Array(size),off=0;for(let p of parts){out.set(p,off);off+=p.length}return out}
+async function assetToJpeg(meta){let blob=await getAsset(meta.id);if(!blob)return null;let url=URL.createObjectURL(blob);try{let img=await new Promise((resolve,reject)=>{let x=new Image();x.onload=()=>resolve(x);x.onerror=()=>reject(new Error("Unable to read screenshot image."));x.src=url});let maxW=1650,maxH=2100,scale=Math.min(1,maxW/img.naturalWidth,maxH/img.naturalHeight),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;let ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);let jpeg=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.9));if(!jpeg)throw new Error("Unable to convert screenshot for PDF.");return{bytes:new Uint8Array(await jpeg.arrayBuffer()),width:w,height:h}}finally{URL.revokeObjectURL(url)}}
+function buildPdfRich(pageDefs){let objs={},pageRefs=[],next=5;for(let pg of pageDefs){pg.pageObj=next++;pg.contentObj=next++;if(pg.image)pg.imageObj=next++;pageRefs.push(pg.pageObj)}objs[1]={text:"<< /Type /Catalog /Pages 2 0 R >>"};objs[2]={text:`<< /Type /Pages /Kids [${pageRefs.map(r=>r+" 0 R").join(" ")}] /Count ${pageRefs.length} >>`};objs[3]={text:"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"};objs[4]={text:"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>"};for(let pg of pageDefs){let stream=pg.commands.join("\n")+"\n";objs[pg.contentObj]={text:`<< /Length ${asciiBytes(stream).length} >>\nstream\n${stream}endstream`};let xobj=pg.image?` /XObject << /Im1 ${pg.imageObj} 0 R >>`:"";objs[pg.pageObj]={text:`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>${xobj} >> /Contents ${pg.contentObj} 0 R >>`};if(pg.image){let im=pg.image,dict=`<< /Type /XObject /Subtype /Image /Width ${im.width} /Height ${im.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.bytes.length} >>\nstream\n`;objs[pg.imageObj]={binary:[asciiBytes(dict),im.bytes,asciiBytes("\nendstream")]}}}let max=Math.max(...Object.keys(objs).map(Number)),chunks=[asciiBytes("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n")],offsets=Array(max+1).fill(0),length=chunks[0].length;for(let i=1;i<=max;i++){offsets[i]=length;let head=asciiBytes(`${i} 0 obj\n`),body=objs[i].binary?concatBytes(objs[i].binary):asciiBytes(objs[i].text),tail=asciiBytes("\nendobj\n");chunks.push(head,body,tail);length+=head.length+body.length+tail.length}let xref=length,x=`xref\n0 ${max+1}\n0000000000 65535 f \n`;for(let i=1;i<=max;i++)x+=String(offsets[i]).padStart(10,"0")+" 00000 n \n";x+=`trailer\n<< /Size ${max+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;chunks.push(asciiBytes(x));return concatBytes(chunks)}
+async function makeSessionPdf(){let r=record(),pages=[];function base(section){let c=[];pdfText(c,54,744,18,"LOOPOLOGY SESSION TIMER",true,0);pdfText(c,54,724,9,section,false,.38);pdfText(c,350,744,8,specialDateTime(),false,.38);pdfLine(c,54,708,558,708,.72,.7);return c}let c=base("SESSION RECORD"),meta=[["SESSION ID",r.id||"-"],["TITLE",r.title||"-"],["DATE",r.date||"-"],["STATUS",r.status||"-"],["START",r.start?specialDateTime(r.start):"-"],["END",r.stop?specialDateTime(r.stop):"-"],["ACTIVE TIME",dur(r.activeMs)],["PAUSED TIME",dur(r.pausedMs)],["WALL TIME",dur(r.wallMs)],["NOTES",String((r.notes||[]).length)],["SCREENSHOTS",String((r.attachments||[]).length)],["AUDIO FILES",String((r.audioRefs||[]).length)]];let y=677;meta.forEach(([k,v],i)=>{let col=i%2,row=Math.floor(i/2),x=54+col*255,yy=y-row*39;pdfText(c,x,yy,7,k,true,.45);pdfText(c,x,yy-14,9.5,v,false,.08)});pages.push({commands:c});let allNotes=[];(r.notes||[]).forEach((n,i)=>{allNotes.push(`${String(i+1).padStart(2,"0")}  [${n.clock||"-"} | SESSION +${n.elapsed||"00:00:00"}]`);allNotes.push(...wrapText(n.text||"",88));allNotes.push("")});if(!allNotes.length)allNotes=["No session notes recorded."];let perPage=39;for(let start=0;start<allNotes.length;start+=perPage){c=base(start===0?"SESSION NOTES":"SESSION NOTES - CONTINUED");let boxTop=681,boxBottom=92;pdfBox(c,54,boxBottom,504,boxTop-boxBottom);let ny=boxTop-27;pdfText(c,74,ny,8.5,`Session ID: ${r.id||"-"}`,true,.26);pdfText(c,315,ny,8,`Date: ${r.date||"-"}`,false,.38);ny-=25;pdfLine(c,74,ny+9,538,ny+9,.84,.5);for(let line of allNotes.slice(start,start+perPage)){pdfText(c,74,ny,9,line,false,.08);ny-=13}pages.push({commands:c})}let audioLines=[];(r.audioRefs||[]).forEach((a,i)=>{audioLines.push(`${String(i+1).padStart(2,"0")}  [${a.clock||clock(a.addedAt)} | SESSION +${a.elapsed||"00:00:00"}]`);audioLines.push(a.name||"Audio File");audioLines.push(`Size: ${fmtBytes(a.size)}${a.durationMs?"   Duration: "+dur(a.durationMs):""}`);if(a.location)audioLines.push(`Location: ${a.location}`);if(a.note)audioLines.push(...wrapText(`Evidence note: ${a.note}`,82));audioLines.push("")});if(audioLines.length){let audioPerPage=34;for(let start=0;start<audioLines.length;start+=audioPerPage){c=base(start===0?"AUDIO FILE REFERENCES":"AUDIO FILE REFERENCES - CONTINUED");let boxTop=681,boxBottom=92;pdfBox(c,54,boxBottom,504,boxTop-boxBottom);let ay=boxTop-27;pdfText(c,74,ay,8.5,`Session ID: ${r.id||"-"}`,true,.26);pdfText(c,315,ay,8,`Audio files remain external`,false,.38);ay-=25;pdfLine(c,74,ay+9,538,ay+9,.84,.5);for(let line of audioLines.slice(start,start+audioPerPage)){pdfText(c,74,ay,8.5,line,false,.08);ay-=14}pages.push({commands:c})}}for(let i=0;i<(r.attachments||[]).length;i++){let a=r.attachments[i],image=null;try{image=await assetToJpeg(a)}catch(e){console.warn(e)}c=base(`SESSION SCREENSHOT ${i+1} OF ${(r.attachments||[]).length}`);pdfText(c,54,680,8,`${a.clock||clock(a.addedAt)} | SESSION +${a.elapsed||"00:00:00"}`,true,.28);pdfText(c,54,662,9,a.name||"Screenshot",false,.08);let captionLines=wrapText(a.caption||"",88),cy=644;for(let line of captionLines.slice(0,4)){pdfText(c,54,cy,8,line,false,.25);cy-=12}if(image){let availW=504,availH=Math.max(330,cy-92),scale=Math.min(availW/image.width,availH/image.height),dw=image.width*scale,dh=image.height*scale,dx=54+(availW-dw)/2,dy=92+(availH-dh)/2;c.push(`q .87 g ${dx+7} ${dy-7} ${dw} ${dh} re f Q`);c.push(`q ${dw} 0 0 ${dh} ${dx} ${dy} cm /Im1 Do Q`);c.push(`q .72 G .8 w ${dx} ${dy} ${dw} ${dh} re S Q`)}else{pdfBox(c,54,120,504,430);pdfText(c,74,320,10,"Screenshot image data unavailable in this browser.",true,.35)}pages.push({commands:c,image})}let total=pages.length;pages.forEach((pg,i)=>{pdfLine(pg.commands,54,52,558,52,.86,.5);pdfText(pg.commands,54,36,7,`LOOPOLOGY SESSION TIMER | ${r.id||"SESSION"}`,false,.46);pdfText(pg.commands,505,36,7,`PAGE ${i+1} OF ${total}`,false,.46)});return buildPdfRich(pages)}
+async function exportPdf(){let b=$("pdfBtn"),old=b.textContent;b.disabled=true;b.textContent="Building PDF";try{let bytes=await makeSessionPdf(),blob=new Blob([bytes],{type:"application/pdf"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=safeName($("sessionId").value)+"_Loopology_Session.pdf";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},700)}catch(e){toast("PDF export failed. "+(e&&e.message?e.message:""))}finally{b.disabled=false;b.textContent=old}}
+function flashTarget(el){if(!el||el.disabled)return;el.classList.remove("glassFlash");void el.offsetWidth;el.classList.add("glassFlash");setTimeout(()=>el.classList.remove("glassFlash"),460)}
+document.addEventListener("focusin",e=>{if(e.target.matches("input,textarea,select"))flashTarget(e.target)});
+document.addEventListener("click",e=>{let b=e.target.closest("button");if(b)flashTarget(b)});
+
+$("startBtn").onclick=start;$("pauseBtn").onclick=pause;$("resumeBtn").onclick=resume;$("undoBtn").onclick=undoLast;$("redoBtn").onclick=redoLast;$("stopBtn").onclick=stop;$("deleteLoadedSession").onclick=deleteLoadedHistorySession;$("addNote").onclick=add;$("clearNote").onclick=()=>$("note").value="";$("importAttachment").onclick=()=>$("attachmentInput").click();$("attachmentInput").addEventListener("change",e=>importScreenshots(e.target.files));$("importAudio").onclick=()=>chooseAudioFile(null,false);$("audioInput").addEventListener("change",async e=>{let file=e.target.files&&e.target.files[0];if(file)await addAudioReference(file,null,audioRelinkTarget,audioRelinkAutoPlay);audioRelinkTarget=null;audioRelinkAutoPlay=false;$("audioInput").value=""});$("closeModal").onclick=closePreview;$("imageModal").addEventListener("click",e=>{if(e.target===$("imageModal"))closePreview()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview();let tag=(e.target&&e.target.tagName||"").toLowerCase(),typing=tag==="input"||tag==="textarea"||tag==="select"||(e.target&&e.target.isContentEditable);if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"&&!typing){e.preventDefault();if(e.shiftKey){if(redoStack.length)redoLast()}else if(undoStack.length)undoLast();return}if(typing)return;if((e.key===" "||e.code==="Space")&&!(e.target&&e.target.closest&&e.target.closest("button,a,[role=button]"))&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();if(s.running&&!s.paused&&!s.stopped)pause();else if(s.running&&s.paused)resume();return}if((e.key==="s"||e.key==="S")&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!s.running&&!s.stopped){e.preventDefault();start()}});$("newBtn").onclick=fresh;$("saveBtn").onclick=()=>{persist();saveHistory()};$("sessionExportBtn").onclick=exportPortableSession;$("sessionImportBtn").onclick=()=>{$("sessionImportInput").value="";$("sessionImportInput").click()};$("sessionImportInput").addEventListener("change",async e=>{let file=e.target.files&&e.target.files[0];if(file)await importPortableSessionFile(file);$("sessionImportInput").value=""});$("textBtn").onclick=exportText;$("pdfBtn").onclick=exportPdf;$("addEditNote").onclick=()=>addEditNoteRow();$("saveEdit").onclick=saveEditedSession;$("cancelEdit").onclick=closeEditor;$("note").addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();add()}});if($("noteSearch"))$("noteSearch").addEventListener("input",()=>renderNotes());if($("historySearch"))$("historySearch").addEventListener("input",()=>renderHistory());["sessionId","sessionTitle","sessionDate"].forEach(id=>$(id).addEventListener("input",persist));$("sessionDate").value=localISODate();initThemes();restore();renderHistory();render();renderAttachments();renderAudioRefs();updateUndoButton();setInterval(()=>{render();if(s.running&&Date.now()-(persist._last||0)>2000){persist._last=Date.now();persist()}},250);
+/* LST-9 reliability layer */
+let wakeLock=null;
+async function wantWake(){const on=s.running&&!s.paused&&!s.stopped;try{if(on&&!wakeLock&&navigator.wakeLock&&document.visibilityState==="visible"){wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null})}else if(!on&&wakeLock){await wakeLock.release();wakeLock=null}}catch(e){wakeLock=null}}
+const _wrap=(fn,msg)=>function(...a){const before=[s.running,s.paused,s.stopped].join();const r=fn.apply(this,a);if([s.running,s.paused,s.stopped].join()!==before){announce(msg);toast(msg,"ok")}wantWake();return r};
+start=_wrap(start,"Timer started");pause=_wrap(pause,"Session paused");resume=_wrap(resume,"Session resumed");stop=_wrap(stop,"Session stopped and saved to history");
+$("startBtn").onclick=start;$("pauseBtn").onclick=pause;$("resumeBtn").onclick=resume;
+$("stopBtn").onclick=()=>{if(confirm("Stop this session? It will be saved to Session History (Undo can reverse it)."))stop()};
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){render();wantWake()}else if(s.running)persist()});
+window.addEventListener("beforeunload",e=>{if(s.running&&!s.stopped){persist();e.preventDefault();e.returnValue=""}});
+window.addEventListener("pagehide",()=>{try{persist()}catch(e){}});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persisted().then(p=>{if(!p)navigator.storage.persist()}).catch(()=>{})}catch(e){}
+wantWake();
+/* Mobile + desktop layer */
+const vib=p=>{try{if(navigator.vibrate&&matchMedia("(pointer:coarse)").matches)navigator.vibrate(p)}catch(e){}};
+[["startBtn",30],["pauseBtn",[20,40,20]],["resumeBtn",30],["undoBtn",10],["redoBtn",10]].forEach(([id,p])=>$(id).addEventListener("pointerdown",()=>{if(!$(id).disabled)vib(p)}));
+$("stopBtn").addEventListener("pointerdown",()=>{if(!$("stopBtn").disabled)vib(60)});
+const syncState=()=>{document.body.dataset.state=s.stopped?"completed":s.running?(s.paused?"paused":"running"):"ready"};
+const _render=render;render=function(...a){const r=_render.apply(this,a);syncState();return r};syncState();
+if(window.visualViewport){const vv=()=>document.documentElement.style.setProperty("--vvh",visualViewport.height+"px");visualViewport.addEventListener("resize",vv);vv()}
+document.addEventListener("focusin",e=>{if(e.target.matches("input,textarea")&&matchMedia("(pointer:coarse)").matches)setTimeout(()=>e.target.scrollIntoView({block:"center",behavior:"smooth"}),300)});
+let dragDepth=0;const isFiles=e=>e.dataTransfer&&[...e.dataTransfer.types].includes("Files");
+window.addEventListener("dragenter",e=>{if(!isFiles(e))return;e.preventDefault();dragDepth++;document.body.classList.add("dropping")});
+window.addEventListener("dragover",e=>{if(isFiles(e))e.preventDefault()});
+window.addEventListener("dragleave",e=>{if(!isFiles(e))return;if(--dragDepth<=0){dragDepth=0;document.body.classList.remove("dropping")}});
+window.addEventListener("drop",e=>{if(!isFiles(e))return;e.preventDefault();dragDepth=0;document.body.classList.remove("dropping");const imgs=[...e.dataTransfer.files].filter(f=>/^image\/(png|jpe?g|webp)$/.test(f.type));if(imgs.length)importScreenshots(imgs);else toast("Drop PNG, JPG, or WEBP screenshots here.","err")});
+/* LST-10: typed Start/End time entry + Start works after a completed session */
+const teShow=()=>{let a=$("teStart"),b=$("teEnd");if(document.activeElement!==a&&!a.dataset.dirty)a.value=localDT(s.start);if(document.activeElement!==b&&!b.dataset.dirty)b.value=localDT(s.stop);$("teDuration").textContent=s.start?"Duration: "+dur(snap().wall)+(s.stop?"":" (running)"):"Duration: —"};
+["teStart","teEnd"].forEach(id=>$(id).addEventListener("input",()=>$(id).dataset.dirty="1"));
+$("teApply").onclick=()=>{let st=fromLocalDT($("teStart").value),en=fromLocalDT($("teEnd").value);if(!st){toast("Enter a Start Time first","err");return}if(en&&en<st){toast("End Time is before Start Time","err");return}if(en&&en>Date.now()+60000){toast("End Time is in the future","err");return}
+ pushUndo("Enter Start/End");hideHistoryNotice();let keep={notes:s.notes||[],attachments:s.attachments||[],audioRefs:s.audioRefs||[]};
+ if(s.stopped&&s.start&&s.start!==st){keep={notes:[],attachments:[],audioRefs:[]};$("sessionId").value=nextId()}
+ s={running:!en,paused:false,stopped:!!en,start:st,pauseStart:null,pausedMs:0,stop:en||null,...keep};
+ $("sessionDate").value=localDT(st).slice(0,10);status(en?"COMPLETED":"ACTIVE");persist();if(en)saveHistory();
+ delete $("teStart").dataset.dirty;delete $("teEnd").dataset.dirty;render();teShow();let m=en?"Times saved. Duration "+dur(en-st):"Start time set. Timer running from "+clock(st);announce(m);toast(m,"ok")};
+const _start2=start;start=function(...a){if(s.stopped){$("sessionId").value=nextId();$("sessionTitle").value=$("sessionTitle").value||"Loopology Session";$("sessionDate").value=localISODate()}const r=_start2.apply(this,a);teShow();return r};
+$("startBtn").onclick=start;
+const _render2=render;render=function(...a){const r=_render2.apply(this,a);$("startBtn").disabled=!!(s.running&&!s.stopped);$("startBtn").title=s.stopped?"Start a new session (last one is saved in Session History)":"Start session (S)";return r};
+setInterval(teShow,1000);teShow();render();
+document.querySelectorAll("button:not([type])").forEach(b=>b.type="button");
+})();
+</script>
+<!-- LST-9: themes (Obsidian/Midnight/Emerald/Amber/Violet/Crimson/Arctic/Graphite) + Redo, search, shortcuts, confirm, chip states, autosave, history Duplicate. -->
+</body></html>
